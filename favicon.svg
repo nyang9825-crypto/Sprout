@@ -1,25 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
-      <stop offset="0%" stop-color="#22c55e"/>
-      <stop offset="100%" stop-color="#15803d"/>
-    </linearGradient>
-    <linearGradient id="shine" x1="0" y1="0" x2="0.5" y2="1">
-      <stop offset="0%" stop-color="white" stop-opacity="0.22"/>
-      <stop offset="60%" stop-color="white" stop-opacity="0"/>
-    </linearGradient>
-    <clipPath id="squircle">
-      <rect width="64" height="64" rx="14"/>
-    </clipPath>
-  </defs>
-  <!-- iOS-style squircle background -->
-  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
-  <rect width="64" height="64" rx="14" fill="url(#shine)"/>
-  <!-- Sprout icon paths, scaled 2x and offset 8,8 to fill 8–56 in 64x64 -->
-  <g transform="translate(8 8) scale(2)" clip-path="url(#squircle)">
-    <path d="M 2.5 12 C 6 1 18 1 22 9 L 20.5 10.5 C 17 3.5 7 3.5 4 13 Z" fill="white"/>
-    <path d="M 6.5 14 C 8.3 14.8 8.3 20.2 6.5 21 C 4.7 20.2 4.7 14.8 6.5 14 Z" fill="white"/>
-    <path d="M 12 11.5 C 14.5 12.5 14.5 20 12 21 C 9.5 20 9.5 12.5 12 11.5 Z" fill="white"/>
-    <path d="M 17.5 9 C 20.7 10.2 20.7 19.8 17.5 21 C 14.3 19.8 14.3 10.2 17.5 9 Z" fill="white"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="230" fill="#052e16"/>
+  <!-- Arc / crescent swoosh -->
+  <path d="M 148 484 C 258 44 658 72 822 402 C 682 222 342 242 166 522 C 156 504 150 493 148 484 Z" fill="#22c55e"/>
+  <!-- Small leaf -->
+  <path d="M 268 520 C 328 545 328 835 268 855 C 208 835 208 545 268 520 Z" fill="#22c55e"/>
+  <!-- Medium leaf -->
+  <path d="M 448 440 C 525 468 525 830 448 855 C 371 830 371 468 448 440 Z" fill="#22c55e"/>
+  <!-- Large leaf -->
+  <path d="M 664 350 C 762 383 762 822 664 855 C 566 822 566 383 664 350 Z" fill="#22c55e"/>
 </svg>
