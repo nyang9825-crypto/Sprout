@@ -51,11 +51,27 @@ function escHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
+function animateValue(el, to, isCurrency = true, duration = 600) {
+    if (!el) return;
+    const from = parseFloat(el.textContent) || 0;
+    if (from === to) { el.textContent = isCurrency ? to.toFixed(2) : to; return; }
+    const start = performance.now();
+    const tick = (now) => {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const cur = from + (to - from) * eased;
+        el.textContent = isCurrency ? cur.toFixed(2) : Math.round(cur);
+        if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+}
+
 function renderSubItem(sub, showDays = false) {
     const days = daysUntil(sub.renewalDate);
     const monthly = toMonthly(sub.cost, sub.cycle);
+    const urgentClass = days >= 0 && days <= 3 ? ' sub-item-urgent' : '';
     return `
-        <div class="sub-item">
+        <div class="sub-item${urgentClass}">
             <div class="sub-emoji" style="background:${subBgColor(sub.category)}">${sub.emoji || '📦'}</div>
             <div class="sub-info">
                 <div class="sub-name">${escHtml(sub.name)}</div>

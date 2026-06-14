@@ -1,8 +1,16 @@
 function deleteSub(id) {
-    if (!confirm('Delete this subscription?')) return;
+    const sub = subs.find(s => s.id === id);
+    if (!sub) return;
     subs = subs.filter(s => s.id !== id);
     persistSubs();
     renderAll();
+    toastUndo(`Deleted "${sub.name}"`, () => {
+        subs.push(sub);
+        subs.sort((a, b) => new Date(a.renewalDate) - new Date(b.renewalDate));
+        persistSubs();
+        renderAll();
+        toast(`Restored "${sub.name}"`, 'success');
+    });
 }
 
 function setFilter(cat) {
@@ -11,7 +19,7 @@ function setFilter(cat) {
 }
 
 function exportCSV() {
-    if (subs.length === 0) return alert('No subscriptions to export.');
+    if (subs.length === 0) { toast('No subscriptions to export.', 'info'); return; }
     const rows = [
         ['Name', 'Cost', 'Cycle', 'Monthly Equivalent', 'Renewal Date', 'Category', 'Notes'],
         ...subs.map(s => [
@@ -29,4 +37,5 @@ function exportCSV() {
     a.download = `subscriptions_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
+    toast(`Exported ${subs.length} subscriptions`, 'success');
 }

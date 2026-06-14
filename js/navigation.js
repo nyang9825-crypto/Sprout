@@ -2,10 +2,11 @@ function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(`page-${id}`).classList.add('active');
 
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const pages = ['dashboard', 'subscriptions', 'analytics', 'upcoming'];
     const idx = pages.indexOf(id);
-    if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach((n, i) => n.classList.toggle('active', i === idx));
+    document.querySelectorAll('.mobile-nav-item').forEach((n, i) => n.classList.toggle('active', i === idx));
 
     renderAll();
 }

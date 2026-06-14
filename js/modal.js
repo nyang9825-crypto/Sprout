@@ -12,9 +12,23 @@ function selectEmoji(e) {
     });
 }
 
+function setFieldError(errId, inputId, msg) {
+    const err = document.getElementById(errId);
+    const inp = document.getElementById(inputId);
+    if (err) { err.textContent = msg; err.classList.toggle('hidden', !msg); }
+    if (inp) inp.classList.toggle('input-error', !!msg);
+}
+
+function clearFieldErrors() {
+    setFieldError('errName', 'fName', '');
+    setFieldError('errCost', 'fCost', '');
+    setFieldError('errDate', 'fDate', '');
+}
+
 function openModal(id = null) {
     editingId = id;
     selectedEmoji = '📦';
+    clearFieldErrors();
 
     if (id !== null) {
         const sub = subs.find(s => s.id === id);
@@ -43,6 +57,7 @@ function openModal(id = null) {
 
 function closeModal() {
     document.getElementById('modalBackdrop').classList.add('hidden');
+    clearFieldErrors();
     editingId = null;
 }
 
@@ -58,11 +73,16 @@ function saveSub() {
     const category = document.getElementById('fCategory').value;
     const notes    = document.getElementById('fNotes').value.trim();
 
-    if (!name)           return alert('Please enter a subscription name.');
-    if (!cost || cost < 0) return alert('Please enter a valid cost.');
-    if (!date)           return alert('Please select a renewal date.');
+    clearFieldErrors();
+    let hasError = false;
 
-    if (editingId !== null) {
+    if (!name)            { setFieldError('errName', 'fName', 'Please enter a name.'); hasError = true; }
+    if (!cost || cost < 0){ setFieldError('errCost', 'fCost', 'Please enter a valid cost.'); hasError = true; }
+    if (!date)            { setFieldError('errDate', 'fDate', 'Please select a date.'); hasError = true; }
+    if (hasError) return;
+
+    const isEdit = editingId !== null;
+    if (isEdit) {
         const idx = subs.findIndex(s => s.id === editingId);
         if (idx >= 0) {
             subs[idx] = { ...subs[idx], name, emoji: selectedEmoji, cost, cycle, renewalDate: date, category, notes };
@@ -84,4 +104,5 @@ function saveSub() {
     persistSubs();
     closeModal();
     renderAll();
+    toast(isEdit ? `Updated ${name}` : `Added ${name}`, 'success');
 }

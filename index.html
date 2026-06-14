@@ -257,6 +257,25 @@
     </main>
 </div>
 
+<!-- Mobile bottom navigation -->
+<nav class="mobile-nav">
+    <button class="mobile-nav-item active" onclick="showPage('dashboard')">
+        <span class="nav-emoji">🏠</span><span>Dashboard</span>
+    </button>
+    <button class="mobile-nav-item" onclick="showPage('subscriptions')">
+        <span class="nav-emoji">📋</span><span>Subs</span>
+    </button>
+    <button class="mobile-nav-item" onclick="showPage('analytics')">
+        <span class="nav-emoji">📈</span><span>Analytics</span>
+    </button>
+    <button class="mobile-nav-item" onclick="showPage('upcoming')">
+        <span class="nav-emoji">🔔</span><span>Upcoming</span>
+    </button>
+</nav>
+
+<!-- Toast container -->
+<div id="toastContainer"></div>
+
 <!-- Add / Edit Modal -->
 <div id="modalBackdrop" class="modal-backdrop hidden" onclick="closeModalBackdrop(event)">
     <div class="modal">
@@ -268,6 +287,7 @@
         <div class="field">
             <label>Subscription Name</label>
             <input type="text" id="fName" placeholder="e.g. Netflix, Spotify, Adobe..." />
+            <p class="field-error hidden" id="errName"></p>
         </div>
 
         <div class="field">
@@ -279,6 +299,7 @@
             <div class="field">
                 <label>Cost</label>
                 <input type="number" id="fCost" placeholder="0.00" step="0.01" min="0" />
+                <p class="field-error hidden" id="errCost"></p>
             </div>
             <div class="field">
                 <label>Billing Cycle</label>
@@ -294,6 +315,7 @@
             <div class="field">
                 <label>Next Renewal Date</label>
                 <input type="date" id="fDate" />
+                <p class="field-error hidden" id="errDate"></p>
             </div>
             <div class="field">
                 <label>Category</label>
@@ -346,6 +368,7 @@
 <script src="js/constants.js"></script>
 <script src="js/state.js"></script>
 <script src="js/storage.js"></script>
+<script src="js/toast.js"></script>
 <script src="js/helpers.js"></script>
 <script src="js/navigation.js"></script>
 <script src="js/render.js"></script>

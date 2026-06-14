@@ -23,11 +23,11 @@ function renderDashboard() {
         return d >= now && d <= in30;
     }).sort((a, b) => new Date(a.renewalDate) - new Date(b.renewalDate));
 
-    document.getElementById('dashMonthly').textContent        = monthly.toFixed(2);
-    document.getElementById('dashYearly').textContent         = yearly.toFixed(2);
-    document.getElementById('dashCount').textContent          = subs.length;
-    document.getElementById('dashWeekRenewals').textContent   = weekRenewals.length;
-    document.getElementById('dashUpcomingBadge').textContent  = `${weekRenewals.length} this week`;
+    animateValue(document.getElementById('dashMonthly'),     monthly,           true);
+    animateValue(document.getElementById('dashYearly'),      yearly,            true);
+    animateValue(document.getElementById('dashCount'),       subs.length,       false);
+    animateValue(document.getElementById('dashWeekRenewals'),weekRenewals.length,false);
+    document.getElementById('dashUpcomingBadge').textContent = `${weekRenewals.length} this week`;
 
     const list = document.getElementById('dashUpcomingList');
     list.innerHTML = upcoming30.length === 0
@@ -37,10 +37,16 @@ function renderDashboard() {
 
 function renderSubscriptions() {
     const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+
+    // Build category counts
+    const catCounts = { All: subs.length };
+    subs.forEach(s => { catCounts[s.category] = (catCounts[s.category] || 0) + 1; });
     const categories = ['All', ...new Set(subs.map(s => s.category))];
 
     document.getElementById('categoryChips').innerHTML = categories.map(c => `
-        <button class="cat-chip ${c === filterCategory ? 'active' : ''}" onclick="setFilter('${c}')">${c}</button>
+        <button class="cat-chip ${c === filterCategory ? 'active' : ''}" onclick="setFilter('${c}')">
+            ${c} <span class="chip-count">${catCounts[c] || 0}</span>
+        </button>
     `).join('');
 
     let filtered = subs.filter(s => {
@@ -53,7 +59,7 @@ function renderSubscriptions() {
     const list = document.getElementById('subList');
     if (filtered.length === 0) {
         const empty = subs.length === 0
-            ? { icon: '🔍', title: 'No subscriptions yet', sub: 'Click "+ Add New" to track your first subscription.' }
+            ? { icon: '📋', title: 'No subscriptions yet', sub: 'Click "+ Add New" to track your first subscription.' }
             : { icon: '🔍', title: 'No matches',           sub: 'Try a different search or filter.' };
         list.innerHTML = `<div class="empty-state"><div class="empty-icon">${empty.icon}</div><div class="empty-title">${empty.title}</div><div class="empty-sub">${empty.sub}</div></div>`;
     } else {
@@ -63,7 +69,7 @@ function renderSubscriptions() {
 
 function renderAnalytics() {
     const monthly = totalMonthly();
-    document.getElementById('anaDaily').textContent = (monthly / 30).toFixed(2);
+    animateValue(document.getElementById('anaDaily'), monthly / 30, true);
 
     if (subs.length === 0) {
         document.getElementById('anaAvg').textContent              = '0.00';
@@ -75,10 +81,10 @@ function renderAnalytics() {
         return;
     }
 
-    document.getElementById('anaAvg').textContent = (monthly / subs.length).toFixed(2);
+    animateValue(document.getElementById('anaAvg'), monthly / subs.length, true);
 
     const sorted = subs.slice().sort((a, b) => toMonthly(b.cost, b.cycle) - toMonthly(a.cost, a.cycle));
-    document.getElementById('anaMostExpensive').textContent    = `$${toMonthly(sorted[0].cost, sorted[0].cycle).toFixed(2)}`;
+    animateValue(document.getElementById('anaMostExpensive'), toMonthly(sorted[0].cost, sorted[0].cycle), true);
     document.getElementById('anaMostExpensiveSub').textContent = sorted[0].name;
 
     const catTotals = {};
