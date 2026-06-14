@@ -153,11 +153,11 @@ function renderTripDetail() {
             <button onclick="openCreateTrip('${trip.id}')" title="Edit"
                 style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-            <button onclick="deleteTripConfirm('${trip.id}')" title="Delete trip"
+            </button>` : ''}
+            <button onclick="deleteTripConfirm('${trip.id}')" title="${isOwner ? 'Delete trip' : 'Remove from my trips'}"
                 style="width:36px;height:36px;border-radius:10px;border:1.5px solid #fca5a5;background:#fef2f2;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-            </button>` : ''}
+            </button>
         </div>
 
         <div style="background:linear-gradient(135deg,#052e16,#14532d);border-radius:18px;padding:20px 22px;margin-bottom:16px;color:white">
@@ -358,7 +358,7 @@ function renderTripSplit(el) {
                     <div style="flex:1;min-width:0">
                         <div style="font-size:13px;font-weight:700;color:var(--text)">
                             <span style="color:#ef4444">${escHtml(memberMap[tx.from] || tx.from)}</span>
-                            <span style="color:var(--muted);font-weight:500"> pays </span>
+                            <span style="color:var(--muted);font-weight:500"> needs to pay </span>
                             <span style="color:#16a34a">${escHtml(memberMap[tx.to] || tx.to)}</span>
                         </div>
                     </div>
@@ -464,14 +464,19 @@ function saveTrip() {
 
 function deleteTripConfirm(id) {
     const trip = trips.find(t => t.id === id);
-    if (!trip || !confirm(`Delete "${trip.name}"? This cannot be undone.`)) return;
+    if (!trip) return;
+    const owner = !trip.shareCode || trip.createdBy === currentUid;
+    const msg = owner
+        ? `Delete "${trip.name}"? This cannot be undone.`
+        : `Remove "${trip.name}" from your trips? You can rejoin with the invite link.`;
+    if (!confirm(msg)) return;
     const shareCode = trip.shareCode || null;
     trips = trips.filter(t => t.id !== id);
     saveTrips();
-    if (shareCode && typeof dbDeleteSharedTrip === 'function') dbDeleteSharedTrip(shareCode);
+    if (owner && shareCode && typeof dbDeleteSharedTrip === 'function') dbDeleteSharedTrip(shareCode);
     activeTripId = null;
     closeTripDetail();
-    toast('Trip deleted');
+    toast(owner ? 'Trip deleted' : 'Trip removed from your list');
 }
 
 // ── Trip expense modal ────────────────────────────────────────────────

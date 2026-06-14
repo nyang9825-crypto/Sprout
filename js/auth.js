@@ -100,11 +100,34 @@ function selectAvatar(emoji) {
 function openProfile() {
     const user = getUser();
     if (!user) return;
-    document.getElementById('profileName').textContent  = user.name  || '—';
+    document.getElementById('profileNameInput').value   = user.name  || '';
     document.getElementById('profileEmail').textContent = user.email || '—';
     renderAllAvatars();
     _buildAvatarGrid();
     document.getElementById('profileBackdrop').classList.remove('hidden');
+}
+
+function saveProfileName() {
+    const input = document.getElementById('profileNameInput');
+    const newName = input.value.trim();
+    if (!newName) { input.value = getUser()?.name || ''; return; }
+    if (FIREBASE_ENABLED && typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+        firebase.auth().currentUser.updateProfile({ displayName: newName })
+            .then(() => { _refreshSidebarName(newName); toast('Name updated'); })
+            .catch(() => toast('Could not save name'));
+    } else {
+        try {
+            const u = JSON.parse(localStorage.getItem('sprout_user') || 'null');
+            if (u) { u.name = newName; localStorage.setItem('sprout_user', JSON.stringify(u)); }
+        } catch {}
+        _refreshSidebarName(newName);
+        toast('Name updated');
+    }
+}
+
+function _refreshSidebarName(name) {
+    const el = document.querySelector('.user-badge-name');
+    if (el) el.textContent = name;
 }
 
 function closeProfile() {

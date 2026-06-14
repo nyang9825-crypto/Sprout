@@ -514,7 +514,11 @@
                 </button>
                 <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
             </div>
-            <div id="profileName" style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-0.3px">—</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:2px">
+                <input id="profileNameInput" type="text" maxlength="40"
+                    style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-0.3px;border:none;outline:none;background:transparent;text-align:center;width:100%;max-width:220px;font-family:inherit"
+                    onblur="saveProfileName()" onkeydown="if(event.key==='Enter')this.blur()">
+            </div>
             <div id="profileEmail" style="font-size:13px;color:var(--muted);margin-top:4px">—</div>
 
             <!-- Avatar emoji picker -->
