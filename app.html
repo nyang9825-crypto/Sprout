@@ -100,33 +100,7 @@
                 </div>
                 <div id="gmailBody" style="padding:20px 20px 24px">
 
-                    <!-- Step 1: needs Client ID -->
-                    <div id="gmailStepSetup">
-                        <p style="font-size:14px;color:var(--muted);margin-bottom:16px">
-                            Enter your Google OAuth Client ID to scan your inbox for subscription receipts automatically.
-                            <a href="#" onclick="toggleSetupHelp();return false" style="color:var(--blue);text-decoration:none;font-weight:600"> How do I get one?</a>
-                        </p>
-
-                        <div id="setupHelp" class="hidden" style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;font-size:13px;line-height:1.7;color:var(--muted)">
-                            <strong style="color:var(--text);display:block;margin-bottom:8px">One-time setup (5 minutes, free):</strong>
-                            1. Go to <strong>console.cloud.google.com</strong> → New Project<br>
-                            2. Search for <strong>Gmail API</strong> → Enable it<br>
-                            3. Go to <strong>APIs &amp; Services → Credentials → Create Credentials → OAuth client ID</strong><br>
-                            4. Application type: <strong>Web application</strong><br>
-                            5. Authorized JavaScript origins: add <strong>http://localhost:8080</strong><br>
-                            6. Copy the <strong>Client ID</strong> and paste it below<br>
-                            7. Run the app with: <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px">npx serve . -p 8080</code> then open <strong>http://localhost:8080</strong>
-                        </div>
-
-                        <div style="display:flex;gap:10px">
-                            <input type="text" id="clientIdInput"
-                                placeholder="Paste your Google Client ID here (ends in .apps.googleusercontent.com)"
-                                style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" />
-                            <button onclick="saveClientId()" style="padding:10px 18px;background:var(--blue);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap">Save &amp; Connect</button>
-                        </div>
-                    </div>
-
-                    <!-- Step 2: has Client ID -->
+                    <!-- Step: connect (setup no longer needed — Client ID is built in) -->
                     <div id="gmailStepConnect" class="hidden" style="display:flex;align-items:center;gap:14px">
                         <button onclick="connectGmail()" id="gmailConnectBtn"
                             style="display:flex;align-items:center;gap:10px;padding:11px 20px;background:white;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s">

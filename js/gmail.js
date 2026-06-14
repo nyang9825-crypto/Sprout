@@ -1,3 +1,5 @@
+const SPROUT_CLIENT_ID = '589239694196-kuae6qdpi1ce7sq6brd7k23a88ucgv25.apps.googleusercontent.com';
+
 function gmailDomain(fromHeader) {
     const match = fromHeader.match(/@([\w.-]+)/);
     if (!match) return null;
@@ -5,50 +7,24 @@ function gmailDomain(fromHeader) {
     return parts.slice(-2).join('.');
 }
 
-function toggleSetupHelp() {
-    document.getElementById('setupHelp').classList.toggle('hidden');
-}
-
-function saveClientId() {
-    const id = document.getElementById('clientIdInput').value.trim();
-    if (!id || !id.includes('.apps.googleusercontent.com')) {
-        toast('Invalid Client ID — must end with .apps.googleusercontent.com', 'error');
-        return;
-    }
-    localStorage.setItem('sprout_gmail_client', id);
-    showGmailStep('connect');
-}
-
 function showGmailStep(step) {
-    ['setup', 'connect', 'scanning', 'done'].forEach(s => {
+    ['connect', 'scanning', 'done'].forEach(s => {
         document.getElementById(`gmailStep${s.charAt(0).toUpperCase() + s.slice(1)}`).classList.add('hidden');
     });
     document.getElementById(`gmailStep${step.charAt(0).toUpperCase() + step.slice(1)}`).classList.remove('hidden');
 }
 
 function initGmailUI() {
-    // Migrate from old SubTrack key
-    const legacy = localStorage.getItem('st_gmail_client_id');
-    if (legacy) { localStorage.setItem('sprout_gmail_client', legacy); localStorage.removeItem('st_gmail_client_id'); }
-    const clientId = localStorage.getItem('sprout_gmail_client');
-    if (!clientId) {
-        showGmailStep('setup');
-        document.getElementById('gmailBadge').textContent = 'Setup needed';
-    } else {
-        showGmailStep('connect');
-        document.getElementById('gmailBadge').textContent = 'Ready';
-    }
+    showGmailStep('connect');
+    document.getElementById('gmailBadge').textContent = 'Ready';
 }
 
 function connectGmail() {
-    const clientId = localStorage.getItem('sprout_gmail_client');
-    if (!clientId) { showGmailStep('setup'); return; }
-
     showGmailStep('scanning');
     setScanStatus('Connecting to Google…', 10);
 
     const client = google.accounts.oauth2.initTokenClient({
-        client_id: clientId,
+        client_id: SPROUT_CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/gmail.readonly',
         callback: async (resp) => {
             if (resp.error) {
