@@ -275,6 +275,14 @@ function renderRecentSpends() {
                 </div>
                 ${s.receiptThumb ? `<img src="${s.receiptThumb}" onclick="viewReceiptImage(${s.id})" style="width:34px;height:34px;border-radius:7px;object-fit:cover;cursor:zoom-in;flex-shrink:0" />` : ''}
                 <div style="font-size:16px;font-weight:700;color:var(--text);white-space:nowrap">$${s.amount.toFixed(2)}</div>
+                <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
+                    <button onclick="editSpend(${s.id})" style="padding:4px 5px;border:none;background:none;cursor:pointer;color:#9ca3af;line-height:1" title="Edit">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                    <button onclick="deleteSpend(${s.id})" style="padding:4px 5px;border:none;background:none;cursor:pointer;color:#d1d5db;line-height:1" title="Delete">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
             </div>`;
         }).join('')}
     </div>`;
@@ -342,9 +350,10 @@ function submitQuickAdd() {
         return;
     }
 
+    const label = desc || qaCategory || 'Expense';
     spendings.push({
-        id: Date.now(), name: desc || qaCategory,
-        amount, category: qaCategory, date,
+        id: Date.now(), name: label,
+        amount, category: qaCategory || 'Other', date,
         notes: '', source: qaReceiptThumb ? 'receipt_photo' : 'manual',
         receiptThumb: qaReceiptThumb || null,
     });
@@ -352,5 +361,5 @@ function submitQuickAdd() {
     closeQuickAdd();
     renderHomePage();
     renderBudgetWidget();
-    toast(`$${amount.toFixed(2)} — ${desc || qaCategory}`);
+    toast(`$${amount.toFixed(2)} — ${label}`);
 }

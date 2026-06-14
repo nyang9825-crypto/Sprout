@@ -495,7 +495,7 @@
 <div id="spendModalBackdrop" class="modal-backdrop hidden" onclick="closeSpendModalBackdrop(event)">
     <div class="modal" style="max-width:480px">
         <div class="modal-head">
-            <h3>Add Expense</h3>
+            <h3 id="spendModalTitle">Add Expense</h3>
             <button class="close-btn" onclick="closeSpendModal()">✕</button>
         </div>
 
@@ -564,7 +564,7 @@
 
         <div class="modal-actions" style="display:flex!important">
             <button class="btn-cancel" onclick="closeSpendModal()">Cancel</button>
-            <button class="btn-save" onclick="saveSpend()">Save Expense</button>
+            <button class="btn-save" id="spendSaveBtn" onclick="saveSpend()">Save Expense</button>
         </div>
     </div>
 </div>
