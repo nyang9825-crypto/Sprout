@@ -92,7 +92,7 @@ function renderTripsPage() {
                         <div style="font-size:12px;color:var(--muted);margin-top:3px">${[dateStr, memCount ? `${memCount} member${memCount !== 1 ? 's' : ''}` : ''].filter(Boolean).join(' · ')}</div>
                     </div>
                     <div style="text-align:right;flex-shrink:0">
-                        <div style="font-size:18px;font-weight:800;color:var(--text)">$${total.toFixed(0)}</div>
+                        <div style="font-size:18px;font-weight:800;color:var(--text)">${fmtMoney(total)}</div>
                         <div style="font-size:11px;color:var(--muted);margin-top:2px">${expCount} expense${expCount !== 1 ? 's' : ''}</div>
                     </div>
                 </div>
@@ -144,7 +144,7 @@ function renderTripDetail() {
 
         <div style="background:linear-gradient(135deg,#052e16,#14532d);border-radius:18px;padding:20px 22px;margin-bottom:18px;color:white">
             <div style="font-size:11px;opacity:0.65;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Total trip expenses</div>
-            <div style="font-size:36px;font-weight:800;letter-spacing:-1.5px;line-height:1">$${total.toFixed(2)}</div>
+            <div style="font-size:36px;font-weight:800;letter-spacing:-1.5px;line-height:1">${fmtMoney(total)}</div>
             ${trip.members?.length ? `
             <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px">
                 ${trip.members.map(m => `<span style="padding:4px 10px;background:rgba(255,255,255,0.15);border-radius:99px;font-size:12px;font-weight:600">${escHtml(m.name)}</span>`).join('')}
@@ -213,15 +213,15 @@ function renderTripExpenses(el) {
             const c        = SPEND_CATS.find(x => x.name === exp.category) || SPEND_CATS[7];
             const paidName = memberMap[exp.paidBy] || '?';
             const count    = exp.splitBetween?.length || 1;
-            const per      = (exp.amount / count).toFixed(2);
+            const per      = fmtMoney(exp.amount / count);
             return `<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;${i<expenses.length-1?'border-bottom:1px solid #f0fdf4':''}">
                 <div style="width:40px;height:40px;border-radius:11px;background:${c.color}18;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0">${c.emoji}</div>
                 <div style="flex:1;min-width:0">
                     <div style="font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(exp.name)}</div>
                     <div style="font-size:11px;color:var(--muted);margin-top:2px">${fmtTripDate(exp.date)} · Paid by ${escHtml(paidName)}</div>
-                    <div style="font-size:11px;color:var(--muted)">$${per}/person · ${count} ${count===1?'person':'people'}</div>
+                    <div style="font-size:11px;color:var(--muted)">${per}/person · ${count} ${count===1?'person':'people'}</div>
                 </div>
-                <div style="font-size:15px;font-weight:800;color:var(--text);white-space:nowrap;text-align:right;min-width:54px">$${exp.amount.toFixed(2)}</div>
+                <div style="font-size:15px;font-weight:800;color:var(--text);white-space:nowrap;text-align:right;min-width:54px">${fmtMoney(exp.amount)}</div>
                 <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
                     <button onclick="openTripExpenseModal(${exp.id})" style="padding:4px 5px;border:none;background:none;cursor:pointer;color:#9ca3af;line-height:1" title="Edit">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -276,12 +276,12 @@ function renderTripSplit(el) {
         <div style="background:white;border:1px solid var(--border-soft);border-radius:16px;overflow:hidden;margin-bottom:14px">
             <div style="padding:14px 18px;border-bottom:1px solid #f0fdf4;display:flex;justify-content:space-between;align-items:center">
                 <span style="font-size:13px;font-weight:700;color:var(--text)">Balance per person</span>
-                <span style="font-size:12px;color:var(--muted)">$${perPerson.toFixed(2)} avg</span>
+                <span style="font-size:12px;color:var(--muted)">${fmtMoney(perPerson)} avg</span>
             </div>
             ${trip.members.map(m => {
                 const b = Math.round((balances[m.id] || 0) * 100) / 100;
                 const color = b > 0.01 ? '#16a34a' : b < -0.01 ? '#ef4444' : '#6b7280';
-                const label = b > 0.01 ? `gets back $${b.toFixed(2)}` : b < -0.01 ? `owes $${Math.abs(b).toFixed(2)}` : 'settled ✓';
+                const label = b > 0.01 ? `gets back ${fmtMoney(b)}` : b < -0.01 ? `owes ${fmtMoney(Math.abs(b))}` : 'settled ✓';
                 return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #f0fdf4">
                     <div style="display:flex;align-items:center;gap:10px">
                         <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#15803d);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;flex-shrink:0">${m.name[0]?.toUpperCase()}</div>
@@ -304,7 +304,7 @@ function renderTripSplit(el) {
                             <span style="color:#16a34a">${escHtml(memberMap[tx.to] || tx.to)}</span>
                         </div>
                     </div>
-                    <div style="font-size:16px;font-weight:800;color:var(--text)">$${tx.amount.toFixed(2)}</div>
+                    <div style="font-size:16px;font-weight:800;color:var(--text)">${fmtMoney(tx.amount)}</div>
                 </div>
             `).join('') : `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">✅ Everyone is settled up!</div>`}
         </div>
@@ -436,9 +436,12 @@ function openTripExpenseModal(expenseId = null) {
     const today = new Date().toISOString().split('T')[0];
 
     document.getElementById('teModalTitle').textContent = exp ? 'Edit Expense' : 'Add Expense';
-    document.getElementById('teName').value   = exp?.name   || '';
-    document.getElementById('teAmount').value = exp?.amount != null ? exp.amount : '';
-    document.getElementById('teDate').value   = exp?.date   || today;
+    document.getElementById('teName').value = exp?.name || '';
+    const teInp = document.getElementById('teAmount');
+    if (exp?.amount != null && teInp._prefill) teInp._prefill(exp.amount);
+    else if (teInp._reset) teInp._reset();
+    else teInp.value = '';
+    document.getElementById('teDate').value = exp?.date || today;
     document.getElementById('teNotes').value  = exp?.notes  || '';
 
     // Category
@@ -544,7 +547,8 @@ function closeTripExpenseModal() {
 
 function saveTripExpense() {
     const name   = document.getElementById('teName').value.trim();
-    const amount = parseFloat(document.getElementById('teAmount').value);
+    const teEl   = document.getElementById('teAmount');
+    const amount = teEl._dollarsValue ? teEl._dollarsValue() : parseFloat(teEl.value.replace(/,/g, '') || '0');
     const date   = document.getElementById('teDate').value;
     const notes  = document.getElementById('teNotes').value.trim();
 
@@ -569,7 +573,7 @@ function saveTripExpense() {
     } else {
         if (!trip.expenses) trip.expenses = [];
         trip.expenses.push({ id: Date.now(), name, amount, category: selectedTeCat, date, notes, paidBy, splitBetween });
-        toast(`$${amount.toFixed(2)} added`);
+        toast(`${fmtMoney(amount)} added`);
     }
 
     saveTrips();

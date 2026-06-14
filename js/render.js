@@ -8,9 +8,7 @@ function toggleSubView() {
 }
 
 function renderAll() {
-    renderDashboard();
     renderSubscriptions();
-    renderAnalytics();
     renderUpcoming();
     renderBudgetWidget();
 }
@@ -100,7 +98,7 @@ function renderSubGrid(filtered) {
             ${isPaid ? `<div class="sub-grid-paid"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>` : ''}
             ${iconHtml}
             <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${escHtml(s.name)}</div>
-            <div style="font-size:16px;font-weight:800;color:var(--text);margin-top:3px;letter-spacing:-0.4px">$${toMonthly(s.cost, s.cycle).toFixed(2)}<span style="font-size:10px;font-weight:600;color:var(--muted)">/mo</span></div>
+            <div style="font-size:16px;font-weight:800;color:var(--text);margin-top:3px;letter-spacing:-0.4px">${fmtMoney(toMonthly(s.cost, s.cycle))}<span style="font-size:10px;font-weight:600;color:var(--muted)">/mo</span></div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px">${isPaid ? 'Renewed' : 'Renews'} ${day}${suf}</div>
             <div style="font-size:10px;font-weight:700;color:${color};margin-top:5px;text-transform:uppercase;letter-spacing:0.3px">${s.category}</div>
         </div>`;
@@ -135,7 +133,7 @@ function renderAnalytics() {
     const catArr = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
     const topCat = catArr[0];
     document.getElementById('anaTopCat').textContent    = topCat[0];
-    document.getElementById('anaTopCatSub').textContent = `$${topCat[1].toFixed(2)}/mo`;
+    document.getElementById('anaTopCatSub').textContent = `${fmtMoney(topCat[1])}/mo`;
 
     document.getElementById('catBreakdown').innerHTML = catArr.map(([cat, amt]) => {
         const pct   = monthly > 0 ? (amt / monthly * 100) : 0;
@@ -146,7 +144,7 @@ function renderAnalytics() {
                 <div class="cat-bar-wrap">
                     <div class="cat-bar-label">
                         <span>${cat}</span>
-                        <span>$${amt.toFixed(2)}/mo · ${pct.toFixed(0)}%</span>
+                        <span>${fmtMoney(amt)}/mo · ${pct.toFixed(0)}%</span>
                     </div>
                     <div class="cat-bar-track">
                         <div class="cat-bar-fill" style="width:${pct}%;background:${color}"></div>

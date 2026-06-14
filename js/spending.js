@@ -3,7 +3,7 @@ const SPEND_CATS = [
     { name: 'Shopping',         emoji: '🛍️', color: '#db2777' },
     { name: 'Transport',        emoji: '🚗', color: '#0891b2' },
     { name: 'Entertainment',    emoji: '🎭', color: '#7c3aed' },
-    { name: 'Health & Fitness', emoji: '🏥', color: '#059669' },
+    { name: 'Health & Fitness', emoji: '🏋️', color: '#059669' },
     { name: 'Travel',           emoji: '✈️', color: '#0284c7' },
     { name: 'Utilities',        emoji: '💡', color: '#d97706' },
     { name: 'Other',            emoji: '📦', color: '#6b7280' },
@@ -71,7 +71,9 @@ function openSpendModal(prefill = {}, id = null) {
     editingSpendId = id;
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('spendName').value   = prefill.name   || '';
-    document.getElementById('spendAmount').value = prefill.amount != null ? prefill.amount : '';
+    const amtInp = document.getElementById('spendAmount');
+    if (amtInp._prefill && prefill.amount != null) { amtInp._prefill(prefill.amount); }
+    else { amtInp.value = prefill.amount != null ? prefill.amount : ''; }
     document.getElementById('spendDate').value   = prefill.date   || today;
     document.getElementById('spendNotes').value  = prefill.notes  || '';
     document.getElementById('spendReceiptPreview').style.display = 'none';
@@ -133,7 +135,8 @@ function onReceiptFileChange(e) {
 
 function saveSpend() {
     const name   = document.getElementById('spendName').value.trim();
-    const amount = parseFloat(document.getElementById('spendAmount').value);
+    const amtEl = document.getElementById('spendAmount');
+    const amount = amtEl._dollarsValue ? amtEl._dollarsValue() : parseFloat(amtEl.value.replace(/,/g,'') || '0');
     const date   = document.getElementById('spendDate').value;
     const notes  = document.getElementById('spendNotes').value.trim();
 
@@ -156,7 +159,7 @@ function saveSpend() {
             source: currentReceiptThumb ? 'receipt_photo' : 'manual',
             receiptThumb: currentReceiptThumb || null,
         });
-        toast(`$${amount.toFixed(2)} logged — ${name}`);
+        toast(`${fmtMoney(amount)} logged — ${name}`);
     }
     saveSpendings();
     renderBudgetWidget();
@@ -212,17 +215,17 @@ function renderBudgetWidget() {
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
             <div>
                 <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Total outgoing this month</div>
-                <div style="font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px;line-height:1">$${total.toFixed(2)}</div>
+                <div style="font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1px;line-height:1">${fmtMoney(total)}</div>
                 <div style="font-size:12px;color:var(--muted);margin-top:6px">
-                    <span style="color:var(--text-2);font-weight:600">$${subMo.toFixed(2)}</span> subscriptions &nbsp;+&nbsp;
-                    <span style="color:var(--text-2);font-weight:600">$${spent.toFixed(2)}</span> spending
+                    <span style="color:var(--text-2);font-weight:600">${fmtMoney(subMo)}</span> subscriptions &nbsp;+&nbsp;
+                    <span style="color:var(--text-2);font-weight:600">${fmtMoney(spent)}</span> spending
                 </div>
             </div>
             ${left !== null
                 ? `<div style="text-align:right;flex-shrink:0">
                     <div style="font-size:11px;color:var(--muted);margin-bottom:2px">of $${budget.monthly.toLocaleString()} budget</div>
                     <div style="font-size:18px;font-weight:800;color:${left >= 0 ? 'var(--primary)' : '#ef4444'}">
-                        ${left >= 0 ? `$${left.toFixed(0)} left` : `$${Math.abs(left).toFixed(0)} over`}
+                        ${left >= 0 ? `${fmtMoney(left)} left` : `${fmtMoney(Math.abs(left))} over`}
                     </div>
                     <span onclick="promptSetBudget()" style="font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline">Edit budget</span>
                   </div>`
@@ -247,7 +250,7 @@ function promptSetBudget() {
     const n = parseFloat(val.replace(/[$,]/g, ''));
     if (isNaN(n) || n < 0) { toast('Enter a valid amount', 'error'); return; }
     setBudget(n);
-    toast(`Budget set to $${n.toLocaleString()}/mo`);
+    toast(`Budget set to ${fmtMoney(n)}/mo`);
     renderBudgetWidget();
     if (document.getElementById('page-spending').classList.contains('active')) renderSpendingPage();
 }
@@ -283,24 +286,24 @@ function renderSpendingPage() {
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
             <div class="spend-stat">
                 <div class="spend-stat-label">Spent</div>
-                <div class="spend-stat-val">$${spent.toFixed(2)}</div>
+                <div class="spend-stat-val">${fmtMoney(spent)}</div>
             </div>
             <div class="spend-stat">
                 <div class="spend-stat-label">Subscriptions</div>
-                <div class="spend-stat-val">$${subMo.toFixed(2)}</div>
+                <div class="spend-stat-val">${fmtMoney(subMo)}</div>
             </div>
             <div class="spend-stat${left !== null && left < 0 ? ' over-budget' : ''}"
                  ${budget.monthly === 0 ? 'onclick="promptSetBudget()" style="cursor:pointer;border:2px dashed var(--border)!important"' : ''}>
                 <div class="spend-stat-label">Budget Left</div>
                 <div class="spend-stat-val" style="color:${left === null ? 'var(--muted)' : left >= 0 ? 'var(--primary)' : '#ef4444'}">
-                    ${left === null ? '<span style="font-size:13px">Tap to set</span>' : `$${left.toFixed(2)}`}
+                    ${left === null ? '<span style="font-size:13px">Tap to set</span>' : fmtMoney(left)}
                 </div>
             </div>
         </div>
         ${budget.monthly > 0 ? `
         <div style="background:white;border-radius:12px;padding:14px 18px;border:1px solid var(--border-soft);margin-bottom:16px">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
-                <span style="font-size:12px;color:var(--muted)">$${total.toFixed(2)} of $${budget.monthly.toLocaleString()} (${Math.round(pct)}%)</span>
+                <span style="font-size:12px;color:var(--muted)">${fmtMoney(total)} of ${fmtMoney(budget.monthly)} (${Math.round(pct)}%)</span>
                 <span onclick="promptSetBudget()" style="font-size:12px;color:var(--primary);font-weight:600;cursor:pointer">Edit</span>
             </div>
             <div style="height:8px;background:var(--border);border-radius:99px;overflow:hidden">
@@ -335,7 +338,7 @@ function renderSpendingPage() {
             <div style="margin-bottom:20px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:0 2px">
                     <span style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px">${txDateLabel(date)}</span>
-                    <span style="font-size:12px;font-weight:600;color:var(--muted)">$${dayTotal.toFixed(2)}</span>
+                    <span style="font-size:12px;font-weight:600;color:var(--muted)">${fmtMoney(dayTotal)}</span>
                 </div>
                 <div style="background:white;border-radius:14px;border:1px solid var(--border-soft);overflow:hidden">
                     ${items.map((s, i) => {
@@ -351,7 +354,7 @@ function renderSpendingPage() {
                                 <span style="font-size:10px;font-weight:700;color:${c.color};text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap">${s.category}</span>
                             </span>
                             ${s.receiptThumb ? `<img src="${s.receiptThumb}" onclick="viewReceiptImage(${s.id})" style="width:34px;height:34px;border-radius:7px;object-fit:cover;cursor:zoom-in;flex-shrink:0" title="View receipt" />` : ''}
-                            <div style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;min-width:52px;text-align:right">$${s.amount.toFixed(2)}</div>
+                            <div style="font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;min-width:52px;text-align:right">${fmtMoney(s.amount)}</div>
                             <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
                                 <button onclick="editSpend(${s.id})" style="padding:4px 5px;border:none;background:none;cursor:pointer;color:#9ca3af;line-height:1" title="Edit">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -422,7 +425,7 @@ function promptCatBudget(cat) {
     const n = parseFloat(val.replace(/[$,]/g, ''));
     if (isNaN(n) || n < 0) { toast('Enter a valid amount', 'error'); return; }
     setCatBudget(cat, n);
-    toast(`${cat} budget set to $${n.toFixed(0)}/mo`);
+    toast(`${cat} budget set to ${fmtMoney(n)}/mo`);
     const now = new Date();
     const year = spendViewYear !== null ? spendViewYear : now.getFullYear();
     const month = spendViewMonth !== null ? spendViewMonth : now.getMonth();
@@ -456,7 +459,7 @@ function multiDonutSVG(segments, total, size = 160) {
 
     return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
         ${bg}${arcs.join('')}
-        <text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="16" font-weight="800" fill="#052e16" font-family="Plus Jakarta Sans,sans-serif">$${total.toFixed(0)}</text>
+        <text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="16" font-weight="800" fill="#052e16" font-family="Plus Jakarta Sans,sans-serif">${fmtMoney(total)}</text>
         <text x="${cx}" y="${cy + 11}" text-anchor="middle" font-size="10" fill="#6b7280" font-family="Plus Jakarta Sans,sans-serif">this month</text>
     </svg>`;
 }
@@ -520,7 +523,7 @@ function renderCategoriesTab(entries, spent, year, month) {
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
                     <span style="font-size:13px;font-weight:700;color:var(--text)">${c.name}</span>
                     <span style="font-size:12px;font-weight:600;color:${limit > 0 && amt > limit ? '#ef4444' : 'var(--muted)'}">
-                        $${amt.toFixed(0)}${limit > 0 ? ` / $${limit.toFixed(0)}` : ''}
+                        ${fmtMoney(amt)}${limit > 0 ? ` / ${fmtMoney(limit)}` : ''}
                     </span>
                 </div>
                 ${limit > 0 ? `<div style="height:6px;background:#f0fdf4;border-radius:99px;overflow:hidden">

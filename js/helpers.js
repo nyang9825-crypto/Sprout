@@ -51,6 +51,50 @@ function escHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
+function fmtMoney(n) {
+    if (isNaN(n) || n == null) return '$0.00';
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Cash-register style currency input: digits push in from right (cents → dollars)
+// Call on any <input type="text" inputmode="decimal"> amount field.
+// Read value via el._dollarsValue(), prefill via el._prefill(dollars), reset via el._reset()
+function setupCurrencyInput(el) {
+    if (!el || el._currencySetup) return;
+    el._currencySetup = true;
+    let cents = 0;
+
+    const refresh = () => {
+        el.value = cents === 0 ? '' : (cents / 100).toLocaleString('en-US', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2,
+        });
+    };
+
+    el.addEventListener('keydown', e => {
+        if (e.key >= '0' && e.key <= '9') {
+            e.preventDefault();
+            if (cents < 99999999) { cents = cents * 10 + +e.key; refresh(); }
+        } else if (e.key === 'Backspace') {
+            e.preventDefault();
+            cents = Math.floor(cents / 10);
+            refresh();
+        } else if (e.key === 'Delete') {
+            e.preventDefault();
+            cents = 0; el.value = '';
+        }
+    });
+
+    el.addEventListener('paste', e => {
+        e.preventDefault();
+        const raw = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+        if (raw) { cents = Math.min(parseInt(raw, 10), 99999999); refresh(); }
+    });
+
+    el._dollarsValue = () => cents / 100;
+    el._prefill = dollars => { cents = Math.round(Math.abs(+dollars || 0) * 100); refresh(); };
+    el._reset   = () => { cents = 0; el.value = ''; };
+}
+
 function animateValue(el, to, isCurrency = true, duration = 600) {
     if (!el) return;
     const from = parseFloat(el.textContent) || 0;
@@ -89,32 +133,6 @@ function subIconHTML(sub) {
         ` onerror="onSubLogoError(this)" /></div>`;
 }
 
-// Swipe-down to dismiss a bottom-sheet or modal panel
-function addSwipeClose(el, closeFn, threshold = 100) {
-    if (!el) return;
-    let startY = 0, curY = 0;
-    el.addEventListener('touchstart', e => {
-        startY = curY = e.touches[0].clientY;
-        el.style.transition = 'none';
-    }, { passive: true });
-    el.addEventListener('touchmove', e => {
-        curY = e.touches[0].clientY;
-        const dy = Math.max(0, curY - startY);
-        el.style.transform = `translateY(${dy}px)`;
-    }, { passive: true });
-    el.addEventListener('touchend', () => {
-        const dy = curY - startY;
-        el.style.transition = 'transform 0.28s cubic-bezier(0.4,0,0.2,1)';
-        if (dy > threshold) {
-            el.style.transform = `translateY(110%)`;
-            setTimeout(() => { closeFn(); el.style.transform = ''; el.style.transition = ''; }, 260);
-        } else {
-            el.style.transform = '';
-            setTimeout(() => { el.style.transition = ''; }, 300);
-        }
-    });
-}
-
 function renderSubItem(sub, showDays = false) {
     const days = daysUntil(sub.renewalDate);
     const monthly = toMonthly(sub.cost, sub.cycle);
@@ -130,8 +148,8 @@ function renderSubItem(sub, showDays = false) {
             <div class="sub-right">
                 ${showDays ? daysPill(days) : ''}
                 <div class="sub-cost">
-                    <div class="sub-cost-main">$${sub.cost.toFixed(2)}<span style="font-size:12px;font-weight:500;color:var(--muted)">${cycleLabel(sub.cycle)}</span></div>
-                    ${sub.cycle !== 'monthly' ? `<div class="sub-cost-cycle">$${monthly.toFixed(2)}/mo equiv.</div>` : ''}
+                    <div class="sub-cost-main">${fmtMoney(sub.cost)}<span style="font-size:12px;font-weight:500;color:var(--muted)">${cycleLabel(sub.cycle)}</span></div>
+                    ${sub.cycle !== 'monthly' ? `<div class="sub-cost-cycle">${fmtMoney(monthly)}/mo equiv.</div>` : ''}
                 </div>
                 <button class="icon-btn edit" onclick="openModal(${sub.id})" title="Edit">${ICONS.edit}</button>
                 <button class="icon-btn delete" onclick="deleteSub(${sub.id})" title="Delete">${ICONS.trash}</button>

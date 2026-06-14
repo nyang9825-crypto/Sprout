@@ -57,14 +57,8 @@
         <button class="nav-item active" onclick="showPage('home')">
             <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home
         </button>
-        <button class="nav-item" onclick="showPage('dashboard')">
-            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard
-        </button>
         <button class="nav-item" onclick="showPage('subscriptions')">
             <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span> Subscriptions
-        </button>
-        <button class="nav-item" onclick="showPage('analytics')">
-            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span> Analytics
         </button>
         <button class="nav-item" onclick="showPage('upcoming')">
             <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span> Upcoming Renewals
@@ -73,7 +67,7 @@
             <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span> Spending & Budget
         </button>
         <button class="nav-item" onclick="showPage('trips')">
-            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.45 2 2 0 0 1 3.59 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.27a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span> Trips & Events
+            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l4-8 4 4 4-6 4 10"/><line x1="3" y1="21" x2="21" y2="21"/></svg></span> Trips & Events
         </button>
 
         <div class="sidebar-bottom">
@@ -127,182 +121,178 @@
             </div>
         </div>
 
-        <!-- Dashboard -->
-        <div id="page-dashboard" class="page">
-            <div class="page-header">
-                <h2 id="greetingText">Good morning 👋</h2>
-                <p>Here's an overview of your subscriptions.</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card blue">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                    <p class="stat-label">Monthly Spend</p>
-                    <p class="stat-value">$<span id="dashMonthly">0.00</span></p>
-                    <p class="stat-sub">per month</p>
-                </div>
-                <div class="stat-card green">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-                    <p class="stat-label">Yearly Spend</p>
-                    <p class="stat-value">$<span id="dashYearly">0.00</span></p>
-                    <p class="stat-sub">projected this year</p>
-                </div>
-                <div class="stat-card orange">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
-                    <p class="stat-label">Active Subscriptions</p>
-                    <p class="stat-value"><span id="dashCount">0</span></p>
-                    <p class="stat-sub">services tracked</p>
-                </div>
-                <div class="stat-card red">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-                    <p class="stat-label">Renewals This Week</p>
-                    <p class="stat-value"><span id="dashWeekRenewals">0</span></p>
-                    <p class="stat-sub">coming up soon</p>
-                </div>
-            </div>
-
-            <!-- Gmail Scan Card -->
-            <div class="section-card" id="gmailCard" style="margin-bottom:20px">
-                <div class="section-head">
-                    <div>
-                        <h3>Auto-Detect from Gmail</h3>
-                        <p style="font-size:12px;color:var(--muted);margin-top:3px">Don't want to enter manually? Connect your regular Gmail to auto-detect billing &amp; subscription emails.</p>
-                    </div>
-                    <span class="badge" id="gmailBadge">Not connected</span>
-                </div>
-                <div id="gmailBody" style="padding:20px 20px 24px">
-
-                    <!-- Step: connect (setup no longer needed — Client ID is built in) -->
-                    <div id="gmailStepConnect" class="hidden" style="display:flex;align-items:center;gap:14px">
-                        <button onclick="connectGmail()" id="gmailConnectBtn"
-                            style="display:flex;align-items:center;gap:10px;padding:11px 20px;background:white;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:18px;height:18px" alt="Google" />
-                            Sign in with Google
-                        </button>
-                        <span style="font-size:13px;color:var(--muted)">We only read email subjects &amp; senders — never email body content.</span>
-                    </div>
-
-                    <!-- Step 3: scanning -->
-                    <div id="gmailStepScanning" class="hidden" style="text-align:center;padding:10px 0">
-                        <div id="scanSpinner" style="font-size:24px;margin-bottom:8px">⏳</div>
-                        <p id="scanStatus" style="font-size:14px;color:var(--muted)">Connecting to Gmail…</p>
-                        <div style="height:6px;background:var(--border);border-radius:10px;margin-top:14px;overflow:hidden">
-                            <div id="scanProgress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--blue),#6366f1);border-radius:10px;transition:width 0.4s ease"></div>
-                        </div>
-                    </div>
-
-                    <!-- Step 4: done -->
-                    <div id="gmailStepDone" class="hidden" style="display:flex;align-items:center;gap:14px">
-                        <div style="width:36px;height:36px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✅</div>
-                        <div style="flex:1">
-                            <div style="font-size:14px;font-weight:600;color:var(--text)" id="gmailDoneText">Gmail connected</div>
-                            <div style="font-size:12px;color:var(--muted)" id="gmailDoneSub">Subscriptions imported</div>
-                        </div>
-                        <button onclick="rescanGmail()" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;background:white;font-size:13px;font-weight:600;cursor:pointer;color:var(--text)">Re-scan</button>
-                        <button onclick="resetGmail()" style="padding:8px 14px;border:1.5px solid #fca5a5;border-radius:8px;background:#fef2f2;font-size:13px;font-weight:600;cursor:pointer;color:#ef4444">Disconnect</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Budget / Spending Widget -->
-            <div class="section-card" style="margin-bottom:20px">
-                <div class="section-head">
-                    <div>
-                        <h3>Budget Overview</h3>
-                        <p style="font-size:12px;color:var(--muted);margin-top:3px">Subscriptions + daily spending vs. your monthly budget.</p>
-                    </div>
-                    <button onclick="openSpendModal()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Expense
-                    </button>
-                </div>
-                <div style="padding:20px 20px 22px">
-                    <div id="budgetWidget"></div>
-                </div>
-            </div>
-
-            <div class="section-card">
-                <div class="section-head">
-                    <h3>Upcoming Renewals</h3>
-                    <span class="badge urgent" id="dashUpcomingBadge">0 this week</span>
-                </div>
-                <div id="dashUpcomingList">
-                    <div class="empty-state">
-                        <div class="empty-icon">🎉</div>
-                        <div class="empty-title">Nothing due soon</div>
-                        <div class="empty-sub">No renewals in the next 30 days.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Subscriptions -->
+        <!-- Subscriptions (with Overview and Analytics tabs) -->
         <div id="page-subscriptions" class="page">
-            <div class="page-header">
-                <h2>All Subscriptions</h2>
-                <p>Manage and track every service you're paying for.</p>
+            <!-- Sub-tab bar -->
+            <div style="display:flex;background:#f0fdf4;border-radius:14px;padding:5px;gap:4px;margin-bottom:22px">
+                <button id="subTabSubs" onclick="setSubTab('subs')"
+                    style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:white;color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,0.1)">
+                    My Subs
+                </button>
+                <button id="subTabOverview" onclick="setSubTab('overview')"
+                    style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:transparent;color:var(--muted)">
+                    Overview
+                </button>
+                <button id="subTabAnalytics" onclick="setSubTab('analytics')"
+                    style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:transparent;color:var(--muted)">
+                    Analytics
+                </button>
             </div>
 
-            <div class="topbar">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" placeholder="Search subscriptions..." id="searchInput" oninput="renderSubscriptions()" />
+            <!-- My Subs panel -->
+            <div id="subPanelSubs">
+                <div class="topbar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" placeholder="Search subscriptions..." id="searchInput" oninput="renderSubscriptions()" />
+                    </div>
+                    <div class="topbar-right">
+                        <button class="btn-view-toggle" id="subViewBtn" onclick="toggleSubView()">⊞  Grid</button>
+                        <button class="btn-export" onclick="exportCSV()">Export</button>
+                        <button class="btn-import-csv" onclick="triggerCSVImport()">Import Bank CSV</button>
+                        <button class="btn-add" onclick="openModal()">+ Add New</button>
+                    </div>
                 </div>
-                <div class="topbar-right">
-                    <button class="btn-view-toggle" id="subViewBtn" onclick="toggleSubView()">⊞  Grid</button>
-                    <button class="btn-export" onclick="exportCSV()">Export</button>
-                    <button class="btn-import-csv" onclick="triggerCSVImport()">Import Bank CSV</button>
-                    <button class="btn-add" onclick="openModal()">+ Add New</button>
-                </div>
-            </div>
-
-            <div class="category-row" id="categoryChips"></div>
-
-            <div class="section-card">
-                <div id="subList"></div>
-            </div>
-        </div>
-
-        <!-- Analytics -->
-        <div id="page-analytics" class="page">
-            <div class="page-header">
-                <h2>Spending Analytics</h2>
-                <p>Understand where your money goes.</p>
-            </div>
-
-            <div class="stats-grid" style="margin-bottom:28px">
-                <div class="stat-card blue">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 1 18"/><polyline points="16 7 22 7 22 13"/></svg></div>
-                    <p class="stat-label">Daily Average</p>
-                    <p class="stat-value">$<span id="anaDaily">0.00</span></p>
-                    <p class="stat-sub">per day</p>
-                </div>
-                <div class="stat-card orange">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                    <p class="stat-label">Most Expensive</p>
-                    <p class="stat-value" id="anaMostExpensive">—</p>
-                    <p class="stat-sub" id="anaMostExpensiveSub">no subs yet</p>
-                </div>
-                <div class="stat-card green">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                    <p class="stat-label">Avg. Per Subscription</p>
-                    <p class="stat-value">$<span id="anaAvg">0.00</span></p>
-                    <p class="stat-sub">monthly average</p>
-                </div>
-                <div class="stat-card red">
-                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-                    <p class="stat-label">Top Category</p>
-                    <p class="stat-value" id="anaTopCat" style="font-size:20px">—</p>
-                    <p class="stat-sub" id="anaTopCatSub">by spend</p>
+                <div class="category-row" id="categoryChips"></div>
+                <div class="section-card">
+                    <div id="subList"></div>
                 </div>
             </div>
 
-            <div class="section-card">
-                <div class="section-head"><h3>Spending by Category</h3></div>
-                <div id="catBreakdown" class="cat-breakdown">
-                    <div class="empty-state">
-                        <div class="empty-icon">📊</div>
-                        <div class="empty-title">No data yet</div>
-                        <div class="empty-sub">Add subscriptions to see your breakdown.</div>
+            <!-- Overview panel (formerly Dashboard) -->
+            <div id="subPanelOverview" style="display:none">
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                        <p class="stat-label">Monthly Spend</p>
+                        <p class="stat-value">$<span id="dashMonthly">0.00</span></p>
+                        <p class="stat-sub">per month</p>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                        <p class="stat-label">Yearly Spend</p>
+                        <p class="stat-value">$<span id="dashYearly">0.00</span></p>
+                        <p class="stat-sub">projected this year</p>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+                        <p class="stat-label">Active Subscriptions</p>
+                        <p class="stat-value"><span id="dashCount">0</span></p>
+                        <p class="stat-sub">services tracked</p>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                        <p class="stat-label">Renewals This Week</p>
+                        <p class="stat-value"><span id="dashWeekRenewals">0</span></p>
+                        <p class="stat-sub">coming up soon</p>
+                    </div>
+                </div>
+
+                <!-- Gmail Scan Card -->
+                <div class="section-card" id="gmailCard" style="margin-bottom:20px">
+                    <div class="section-head">
+                        <div>
+                            <h3>Auto-Detect from Gmail</h3>
+                            <p style="font-size:12px;color:var(--muted);margin-top:3px">Connect Gmail to auto-detect billing &amp; subscription emails.</p>
+                        </div>
+                        <span class="badge" id="gmailBadge">Not connected</span>
+                    </div>
+                    <div id="gmailBody" style="padding:20px 20px 24px">
+                        <div id="gmailStepConnect" class="hidden" style="display:flex;align-items:center;gap:14px">
+                            <button onclick="connectGmail()" id="gmailConnectBtn"
+                                style="display:flex;align-items:center;gap:10px;padding:11px 20px;background:white;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s">
+                                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:18px;height:18px" alt="Google" />
+                                Sign in with Google
+                            </button>
+                            <span style="font-size:13px;color:var(--muted)">We only read email subjects &amp; senders — never email body content.</span>
+                        </div>
+                        <div id="gmailStepScanning" class="hidden" style="text-align:center;padding:10px 0">
+                            <div id="scanSpinner" style="font-size:24px;margin-bottom:8px">⏳</div>
+                            <p id="scanStatus" style="font-size:14px;color:var(--muted)">Connecting to Gmail…</p>
+                            <div style="height:6px;background:var(--border);border-radius:10px;margin-top:14px;overflow:hidden">
+                                <div id="scanProgress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--blue),#6366f1);border-radius:10px;transition:width 0.4s ease"></div>
+                            </div>
+                        </div>
+                        <div id="gmailStepDone" class="hidden" style="display:flex;align-items:center;gap:14px">
+                            <div style="width:36px;height:36px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✅</div>
+                            <div style="flex:1">
+                                <div style="font-size:14px;font-weight:600;color:var(--text)" id="gmailDoneText">Gmail connected</div>
+                                <div style="font-size:12px;color:var(--muted)" id="gmailDoneSub">Subscriptions imported</div>
+                            </div>
+                            <button onclick="rescanGmail()" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;background:white;font-size:13px;font-weight:600;cursor:pointer;color:var(--text)">Re-scan</button>
+                            <button onclick="resetGmail()" style="padding:8px 14px;border:1.5px solid #fca5a5;border-radius:8px;background:#fef2f2;font-size:13px;font-weight:600;cursor:pointer;color:#ef4444">Disconnect</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Widget -->
+                <div class="section-card" style="margin-bottom:20px">
+                    <div class="section-head">
+                        <div>
+                            <h3>Budget Overview</h3>
+                            <p style="font-size:12px;color:var(--muted);margin-top:3px">Subscriptions + daily spending vs. your monthly budget.</p>
+                        </div>
+                        <button onclick="openSpendModal()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Expense
+                        </button>
+                    </div>
+                    <div style="padding:20px 20px 22px">
+                        <div id="budgetWidget"></div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Renewals in Overview -->
+                <div class="section-card">
+                    <div class="section-head">
+                        <h3>Upcoming Renewals</h3>
+                        <span class="badge urgent" id="dashUpcomingBadge">0 this week</span>
+                    </div>
+                    <div id="dashUpcomingList">
+                        <div class="empty-state">
+                            <div class="empty-icon">🎉</div>
+                            <div class="empty-title">Nothing due soon</div>
+                            <div class="empty-sub">No renewals in the next 30 days.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics panel -->
+            <div id="subPanelAnalytics" style="display:none">
+                <div class="stats-grid" style="margin-bottom:28px">
+                    <div class="stat-card blue">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 1 18"/><polyline points="16 7 22 7 22 13"/></svg></div>
+                        <p class="stat-label">Daily Average</p>
+                        <p class="stat-value">$<span id="anaDaily">0.00</span></p>
+                        <p class="stat-sub">per day</p>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                        <p class="stat-label">Most Expensive</p>
+                        <p class="stat-value" id="anaMostExpensive">—</p>
+                        <p class="stat-sub" id="anaMostExpensiveSub">no subs yet</p>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <p class="stat-label">Avg. Per Subscription</p>
+                        <p class="stat-value">$<span id="anaAvg">0.00</span></p>
+                        <p class="stat-sub">monthly average</p>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+                        <p class="stat-label">Top Category</p>
+                        <p class="stat-value" id="anaTopCat" style="font-size:20px">—</p>
+                        <p class="stat-sub" id="anaTopCatSub">by spend</p>
+                    </div>
+                </div>
+                <div class="section-card">
+                    <div class="section-head"><h3>Spending by Category</h3></div>
+                    <div id="catBreakdown" class="cat-breakdown">
+                        <div class="empty-state">
+                            <div class="empty-icon">📊</div>
+                            <div class="empty-title">No data yet</div>
+                            <div class="empty-sub">Add subscriptions to see your breakdown.</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -384,7 +374,6 @@
             <button class="close-btn" onclick="closeCreateTrip()">✕</button>
         </div>
         <div style="padding:0 24px 8px">
-            <!-- Emoji + Name -->
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
                 <button id="ctTripEmoji" style="width:56px;height:56px;border-radius:16px;border:2px solid var(--border);background:#f0fdf4;font-size:28px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">✈️</button>
                 <div style="flex:1">
@@ -395,11 +384,7 @@
                         onkeydown="if(event.key==='Enter')saveTrip()" />
                 </div>
             </div>
-
-            <!-- Emoji picker -->
             <div id="ctEmojiPicker" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px"></div>
-
-            <!-- Dates -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
                 <div>
                     <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Start Date</label>
@@ -412,8 +397,6 @@
                         onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
                 </div>
             </div>
-
-            <!-- Members -->
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Members</label>
             <div id="ctMemberList" style="margin-top:8px;margin-bottom:10px"></div>
             <div style="display:flex;gap:8px;margin-bottom:20px">
@@ -438,20 +421,15 @@
             <h3 id="teModalTitle">Add Expense</h3>
             <button class="close-btn" onclick="closeTripExpenseModal()">✕</button>
         </div>
-
-        <!-- Amount -->
         <div style="padding:16px 24px 0">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Amount</label>
             <div style="position:relative;margin-top:6px">
                 <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--muted);font-weight:700">$</span>
-                <input type="number" id="teAmount" placeholder="0.00" step="0.01" min="0"
+                <input type="text" inputmode="decimal" id="teAmount" placeholder="0.00"
                     style="width:100%;padding:14px 16px 14px 38px;font-size:28px;font-weight:800;color:var(--text);border:2px solid var(--border);border-radius:12px;outline:none;font-family:inherit"
-                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"
-                    onkeydown="if(event.key==='Enter')saveTripExpense()" />
+                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
             </div>
         </div>
-
-        <!-- Description + Date -->
         <div style="display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px 24px 0">
             <div>
                 <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Description</label>
@@ -466,8 +444,6 @@
                     onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
             </div>
         </div>
-
-        <!-- Category -->
         <div style="padding:12px 24px 0">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Category</label>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
@@ -475,25 +451,26 @@
                 <button class="spend-cat-btn te-cat-btn"        data-cat="Shopping"         onclick="selectTeCat('Shopping')">🛍️<br><span>Shopping</span></button>
                 <button class="spend-cat-btn te-cat-btn"        data-cat="Transport"        onclick="selectTeCat('Transport')">🚗<br><span>Transport</span></button>
                 <button class="spend-cat-btn te-cat-btn"        data-cat="Entertainment"    onclick="selectTeCat('Entertainment')">🎭<br><span>Fun</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Health & Fitness" onclick="selectTeCat('Health & Fitness')">🏥<br><span>Health</span></button>
+                <button class="spend-cat-btn te-cat-btn"        data-cat="Health & Fitness" onclick="selectTeCat('Health & Fitness')">🏋️<br><span>Health</span></button>
                 <button class="spend-cat-btn te-cat-btn"        data-cat="Travel"           onclick="selectTeCat('Travel')">✈️<br><span>Travel</span></button>
                 <button class="spend-cat-btn te-cat-btn"        data-cat="Utilities"        onclick="selectTeCat('Utilities')">💡<br><span>Bills</span></button>
                 <button class="spend-cat-btn te-cat-btn"        data-cat="Other"            onclick="selectTeCat('Other')">📦<br><span>Other</span></button>
             </div>
         </div>
-
-        <!-- Paid by -->
         <div style="padding:14px 24px 0">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Paid by</label>
             <div id="tePaidBy" style="margin-top:8px"></div>
         </div>
-
-        <!-- Split between -->
-        <div style="padding:14px 24px 20px">
+        <div style="padding:14px 24px 0">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Split between</label>
             <div id="teSplitBetween" style="margin-top:8px"></div>
         </div>
-
+        <div style="padding:14px 24px 20px">
+            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Notes (optional)</label>
+            <input type="text" id="teNotes" placeholder="e.g. dinner at beachside restaurant"
+                style="width:100%;margin-top:5px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none"
+                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+        </div>
         <div class="modal-actions" style="display:flex!important">
             <button class="btn-cancel" onclick="closeTripExpenseModal()">Cancel</button>
             <button class="btn-save" onclick="saveTripExpense()">Save Expense</button>
@@ -507,16 +484,16 @@
         <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Home</span>
     </button>
     <button class="mobile-nav-item" onclick="showPage('spending')">
-        <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span><span>History</span>
+        <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span><span>Spending</span>
     </button>
     <button class="mobile-nav-item" onclick="showPage('subscriptions')">
         <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>Subs</span>
     </button>
-    <button class="mobile-nav-item" onclick="showPage('dashboard')">
-        <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><span>Overview</span>
-    </button>
     <button class="mobile-nav-item" onclick="showPage('trips')">
-        <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.45 2 2 0 0 1 3.59 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.27a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span>Trips</span>
+        <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l4-8 4 4 4-6 4 10"/><line x1="3" y1="21" x2="21" y2="21"/></svg></span><span>Trips</span>
+    </button>
+    <button class="mobile-nav-item" onclick="showPage('upcoming')">
+        <span class="nav-emoji"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span>Renewals</span>
     </button>
 </nav>
 
@@ -562,7 +539,7 @@
             <div class="grid-2">
                 <div class="field">
                     <label>Cost</label>
-                    <input type="number" id="fCost" placeholder="0.00" step="0.01" min="0" />
+                    <input type="text" inputmode="decimal" id="fCost" placeholder="0.00" />
                     <p class="field-error hidden" id="errCost"></p>
                 </div>
                 <div class="field">
@@ -642,7 +619,7 @@
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Amount</label>
             <div style="position:relative;margin-top:6px">
                 <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--muted);font-weight:700">$</span>
-                <input type="number" id="spendAmount" placeholder="0.00" step="0.01" min="0"
+                <input type="text" inputmode="decimal" id="spendAmount" placeholder="0.00"
                     style="width:100%;padding:14px 16px 14px 38px;font-size:28px;font-weight:800;color:var(--text);border:2px solid var(--border);border-radius:12px;outline:none;font-family:inherit"
                     onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
             </div>
@@ -738,10 +715,9 @@
         <!-- Amount — BIG -->
         <div style="position:relative;margin-bottom:14px">
             <span style="position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:28px;font-weight:800;color:var(--muted);pointer-events:none">$</span>
-            <input type="number" id="qaAmount" inputmode="decimal" placeholder="0.00" step="0.01" min="0"
+            <input type="text" inputmode="decimal" id="qaAmount" placeholder="0.00"
                 style="width:100%;padding:18px 18px 18px 52px;font-size:40px;font-weight:800;color:var(--text);border:2px solid var(--border);border-radius:16px;outline:none;font-family:inherit;letter-spacing:-1.5px"
-                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"
-                onkeydown="if(event.key==='Enter')submitQuickAdd()" />
+                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
         </div>
 
         <!-- Description + Date row -->

@@ -119,18 +119,18 @@ function renderHomeBudget() {
             <!-- Totals -->
             <div style="display:flex;justify-content:space-between;align-items:flex-start">
                 <div>
-                    <div style="font-size:36px;font-weight:800;color:var(--text);letter-spacing:-2px;line-height:1">$${spentTotal.toFixed(2)}</div>
+                    <div style="font-size:36px;font-weight:800;color:var(--text);letter-spacing:-2px;line-height:1">${fmtMoney(spentTotal)}</div>
                     <div style="font-size:12px;color:var(--muted);margin-top:6px">
-                        <span style="color:var(--text-2);font-weight:600">$${totalMonthly().toFixed(2)}</span> subs
+                        <span style="color:var(--text-2);font-weight:600">${fmtMoney(totalMonthly())}</span> subs
                         &nbsp;+&nbsp;
-                        <span style="color:var(--text-2);font-weight:600">$${spentSelf.toFixed(2)}</span> spent
+                        <span style="color:var(--text-2);font-weight:600">${fmtMoney(spentSelf)}</span> spent
                     </div>
                 </div>
                 ${left !== null
                     ? `<div style="text-align:right;flex-shrink:0">
                         <div style="font-size:11px;color:var(--muted)">of $${budget.monthly.toLocaleString()}</div>
                         <div style="font-size:20px;font-weight:800;color:${left >= 0 ? 'var(--primary)' : '#ef4444'};margin-top:3px;letter-spacing:-0.5px">
-                            $${Math.abs(left).toFixed(0)} ${left >= 0 ? 'left' : 'over'}
+                            ${fmtMoney(Math.abs(left))} ${left >= 0 ? 'left' : 'over'}
                         </div>
                         <span onclick="promptSetBudget()" style="font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline">Edit</span>
                       </div>`
@@ -196,7 +196,7 @@ function renderHomeChart() {
                 ${spendH > 0 ? `<rect x="${x}" y="${yBase - totalH}" width="${barW}" height="${spendH}" rx="8" fill="${spendColor}"/>` : ''}
                 ${active ? `<text x="${x + barW / 2}" y="${yBase - totalH - 5}"
                     text-anchor="middle" font-size="10" font-weight="800" fill="#15803d"
-                    font-family="Plus Jakarta Sans,sans-serif">$${mo.total.toFixed(0)}</text>` : ''}
+                    font-family="Plus Jakarta Sans,sans-serif">${fmtMoney(mo.total)}</text>` : ''}
             ` : `<rect x="${x}" y="${yBase - 4}" width="${barW}" height="4" rx="2" fill="#f0fdf4"/>`}
             <text x="${x + barW / 2}" y="${H - 3}" text-anchor="middle"
                 font-size="12" font-weight="${active ? '800' : '600'}"
@@ -234,7 +234,7 @@ function renderQuickGrid() {
 
     el.innerHTML = SPEND_CATS.map(c => {
         const catTotal = monthEntries.filter(s => s.category === c.name).reduce((t, s) => t + s.amount, 0);
-        const sub = catTotal > 0 ? `$${catTotal.toFixed(0)} this month` : 'Tap to add';
+        const sub = catTotal > 0 ? `${fmtMoney(catTotal)} this month` : 'Tap to add';
         return `<button class="cat-quick-btn" onclick="openQuickAdd('${c.name.replace(/'/g, "\\'")}')"
             style="background:${c.color}10;border-color:${c.color}28;">
             <span class="cqb-emoji">${c.emoji}</span>
@@ -274,7 +274,7 @@ function renderRecentSpends() {
                     <div style="font-size:11px;color:var(--muted);margin-top:1px">${txDateLabel(s.date)} · ${s.category}</div>
                 </div>
                 ${s.receiptThumb ? `<img src="${s.receiptThumb}" onclick="viewReceiptImage(${s.id})" style="width:34px;height:34px;border-radius:7px;object-fit:cover;cursor:zoom-in;flex-shrink:0" />` : ''}
-                <div style="font-size:16px;font-weight:700;color:var(--text);white-space:nowrap">$${s.amount.toFixed(2)}</div>
+                <div style="font-size:16px;font-weight:700;color:var(--text);white-space:nowrap">${fmtMoney(s.amount)}</div>
                 <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
                     <button onclick="editSpend(${s.id})" style="padding:4px 5px;border:none;background:none;cursor:pointer;color:#9ca3af;line-height:1" title="Edit">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -298,6 +298,8 @@ function openQuickAdd(cat) {
     icon.style.borderColor  = `${c.color}30`;
     document.getElementById('qaCatName').textContent  = cat;
     document.getElementById('qaAmount').value         = '';
+    const qaInp = document.getElementById('qaAmount');
+    if (qaInp._reset) qaInp._reset();
     document.getElementById('qaDesc').value           = '';
     document.getElementById('qaDate').value           = new Date().toISOString().split('T')[0];
     document.getElementById('qaAmount').style.borderColor = 'var(--border)';
@@ -338,7 +340,8 @@ function removeQaReceipt() {
 }
 
 function submitQuickAdd() {
-    const amount = parseFloat(document.getElementById('qaAmount').value);
+    const qaEl   = document.getElementById('qaAmount');
+    const amount = qaEl._dollarsValue ? qaEl._dollarsValue() : parseFloat(qaEl.value.replace(/,/g,'') || '0');
     const desc   = document.getElementById('qaDesc').value.trim();
     const date   = document.getElementById('qaDate').value;
     const amtEl  = document.getElementById('qaAmount');
@@ -361,5 +364,5 @@ function submitQuickAdd() {
     closeQuickAdd();
     renderHomePage();
     renderBudgetWidget();
-    toast(`$${amount.toFixed(2)} — ${label}`);
+    toast(`${fmtMoney(amount)} — ${label}`);
 }

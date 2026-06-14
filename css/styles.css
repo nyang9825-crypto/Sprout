@@ -1584,3 +1584,45 @@ button, a, [onclick], label, select, input[type="checkbox"] {
 
     .btn-view-toggle { display: none; }
 }
+
+/* Smoother page transitions */
+.page { animation: fadeSlideIn 0.22s ease; }
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Better card hover */
+.section-card { transition: box-shadow 0.2s ease; }
+
+/* Currency input styling */
+input[inputmode="decimal"] {
+    -moz-appearance: textfield;
+    cursor: text;
+}
+input[inputmode="decimal"]::-webkit-inner-spin-button,
+input[inputmode="decimal"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* Smoother modal open */
+.modal-backdrop { transition: background 0.2s; }
+.modal {
+    animation: modalSlideUp 0.24s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Improved quick-add sheet */
+.quick-add-sheet {
+    animation: sheetUp 0.28s cubic-bezier(0.34, 1.1, 0.64, 1);
+}
+@keyframes sheetUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+/* Subscription tab styling */
+#subPanelSubs, #subPanelOverview, #subPanelAnalytics {
+    animation: fadeSlideIn 0.18s ease;
+}

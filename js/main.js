@@ -21,23 +21,33 @@ function _bootApp(user) {
     _applyUserUI(user);
     subs      = loadSubs();
     spendings = loadSpendings();
-    trips     = loadTrips();
+    if (typeof loadTrips === 'function') trips = loadTrips();
     _hideLoader();
-    safeRun(setGreeting);
     safeRun(initGmailUI);
     safeRun(renderAll);
     safeRun(renderHomePage);
-    // Swipe-down to dismiss modals
+
+    // Swipe-down close for sheet modals
     setTimeout(() => {
-        const qaSheet = document.querySelector('.quick-add-sheet');
-        if (qaSheet) addSwipeClose(qaSheet, closeQuickAdd);
-        const spendSheet = document.querySelector('#spendModalBackdrop .modal');
-        if (spendSheet) addSwipeClose(spendSheet, closeSpendModal);
-        const ctSheet = document.querySelector('#createTripBackdrop .modal');
-        if (ctSheet) addSwipeClose(ctSheet, closeCreateTrip);
-        const teSheet = document.querySelector('#tripExpenseBackdrop .modal');
-        if (teSheet) addSwipeClose(teSheet, closeTripExpenseModal);
+        const pairs = [
+            ['quick-add-sheet',   closeQuickAdd],
+            ['spendSheet',        closeSpendModal],
+            ['createTripBackdrop', closeCreateTrip],
+            ['tripExpenseBackdrop', closeTripExpenseModal],
+        ];
+        pairs.forEach(([id, fn]) => {
+            const el = document.getElementById(id) || document.querySelector(`.${id}`);
+            if (el && typeof fn === 'function') addSwipeClose(el, fn);
+        });
     }, 200);
+
+    // Init cash-register currency inputs
+    setTimeout(() => {
+        ['qaAmount', 'spendAmount', 'teAmount', 'fCost'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) setupCurrencyInput(el);
+        });
+    }, 300);
 }
 
 // ── Firebase path ──────────────────────────────────────────────────────

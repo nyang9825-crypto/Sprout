@@ -36,7 +36,9 @@ function fillFromCatalog(idx) {
     const s = (window._catalogFiltered || [])[idx];
     if (!s) return;
     document.getElementById('fName').value     = s.name;
-    document.getElementById('fCost').value     = s.cost;
+    const fCostCat = document.getElementById('fCost');
+    if (fCostCat._prefill) fCostCat._prefill(s.cost);
+    else fCostCat.value = s.cost;
     document.getElementById('fCycle').value    = 'monthly';
     document.getElementById('fCategory').value = s.category;
     document.getElementById('fNotes').value    = '';
@@ -85,7 +87,8 @@ function openModal(id = null) {
     if (isNew) {
         document.getElementById('modalTitle').textContent = 'Add Subscription';
         document.getElementById('fName').value     = '';
-        document.getElementById('fCost').value     = '';
+        const fCostNew = document.getElementById('fCost');
+        if (fCostNew._reset) fCostNew._reset(); else fCostNew.value = '';
         document.getElementById('fCycle').value    = 'monthly';
         document.getElementById('fDate').value     = '';
         document.getElementById('fCategory').value = 'Entertainment';
@@ -96,7 +99,9 @@ function openModal(id = null) {
         const sub = subs.find(s => s.id === id);
         document.getElementById('modalTitle').textContent = 'Edit Subscription';
         document.getElementById('fName').value     = sub.name;
-        document.getElementById('fCost').value     = sub.cost;
+        const fCostInp = document.getElementById('fCost');
+        if (fCostInp._prefill) fCostInp._prefill(sub.cost);
+        else fCostInp.value = sub.cost;
         document.getElementById('fCycle').value    = sub.cycle;
         document.getElementById('fDate').value     = sub.renewalDate;
         document.getElementById('fCategory').value = sub.category;
@@ -125,7 +130,8 @@ function closeModalBackdrop(e) {
 
 function saveSub() {
     const name     = document.getElementById('fName').value.trim();
-    const cost     = parseFloat(document.getElementById('fCost').value);
+    const fCostEl  = document.getElementById('fCost');
+    const cost     = fCostEl._dollarsValue ? fCostEl._dollarsValue() : parseFloat(fCostEl.value.replace(/,/g,'') || '0');
     const cycle    = document.getElementById('fCycle').value;
     const date     = document.getElementById('fDate').value;
     const category = document.getElementById('fCategory').value;
