@@ -96,6 +96,13 @@ async function dbJoinTrip(shareCode, memberInfo) {
     } catch (e) { console.error('[db] joinTrip error:', e); return null; }
 }
 
+async function dbDeleteSharedTrip(shareCode) {
+    if (!_db || !shareCode) return;
+    try {
+        await _db.collection('shared_trips').doc(shareCode).delete();
+    } catch (e) { console.error('[db] deleteSharedTrip error:', e); }
+}
+
 async function dbGetSharedTrip(shareCode) {
     if (!_db) return null;
     try {

@@ -3,13 +3,11 @@ function safeRun(fn) {
 }
 
 function _applyUserUI(user) {
-    const initial = (user.name?.charAt(0) || user.email?.[0] || 'S').toUpperCase();
-    const avatarEl = document.getElementById('homeAvatar');
-    if (avatarEl) avatarEl.textContent = initial;
     const nameEl = document.querySelector('.user-badge-name');
     if (nameEl) nameEl.textContent = user.name || user.email;
     const tierEl = document.querySelector('.user-badge-tier');
     if (tierEl) tierEl.textContent = user.email;
+    setTimeout(() => { if (typeof renderAllAvatars === 'function') renderAllAvatars(); }, 50);
 }
 
 function _hideLoader() {

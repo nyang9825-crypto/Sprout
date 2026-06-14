@@ -126,22 +126,30 @@ function renderTripDetail() {
     const end    = trip.endDate && trip.endDate !== trip.startDate ? fmtTripDate(trip.endDate) : '';
     const dateStr = start ? (end ? `${start} – ${end}` : start) : '';
 
+    const uid     = (typeof currentUid !== 'undefined' && currentUid) ? currentUid : null;
+    const isOwner = uid && uid === trip.ownerId;
+
     el.innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
             <button onclick="closeTripDetail()"
                 style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:var(--text)">‹</button>
             <div style="flex:1;min-width:0">
                 <div style="font-size:19px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${trip.emoji || '✈️'} ${escHtml(trip.name)}</div>
                 ${dateStr ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">${dateStr}</div>` : ''}
             </div>
-            <button onclick="shareTripLink('${trip.id}')" title="Share"
+            <button onclick="shareTripLink('${trip.id}')" title="Share summary"
                 style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2.2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             </button>
+            ${isOwner ? `
             <button onclick="openCreateTrip('${trip.id}')" title="Edit"
                 style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
+            <button onclick="deleteTripConfirm('${trip.id}')" title="Delete trip"
+                style="width:36px;height:36px;border-radius:10px;border:1.5px solid #fca5a5;background:#fef2f2;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>` : ''}
         </div>
 
         <div style="background:linear-gradient(135deg,#052e16,#14532d);border-radius:18px;padding:20px 22px;margin-bottom:16px;color:white">
@@ -296,41 +304,62 @@ function renderTripSplit(el) {
     const total     = (trip.expenses || []).reduce((s, e) => s + e.amount, 0);
     const perPerson = trip.members.length ? total / trip.members.length : 0;
 
+    const allSettled = txns.length === 0 && (trip.expenses||[]).length > 0;
+
     el.innerHTML = `
-        <div style="background:white;border:1px solid var(--border-soft);border-radius:16px;overflow:hidden;margin-bottom:14px">
-            <div style="padding:14px 18px;border-bottom:1px solid #f0fdf4;display:flex;justify-content:space-between;align-items:center">
-                <span style="font-size:13px;font-weight:700;color:var(--text)">Balance per person</span>
-                <span style="font-size:12px;color:var(--muted)">${fmtMoney(perPerson)} avg</span>
+        <!-- Summary banner -->
+        <div style="background:linear-gradient(135deg,#052e16,#14532d);border-radius:16px;padding:16px 20px;margin-bottom:14px;color:white;display:flex;justify-content:space-between;align-items:center">
+            <div>
+                <div style="font-size:11px;opacity:0.65;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Total split between ${trip.members.length}</div>
+                <div style="font-size:28px;font-weight:800;letter-spacing:-1px;margin-top:2px">${fmtMoney(total)}</div>
             </div>
-            ${trip.members.map(m => {
-                const b = Math.round((balances[m.id] || 0) * 100) / 100;
-                const color = b > 0.01 ? '#16a34a' : b < -0.01 ? '#ef4444' : '#6b7280';
-                const label = b > 0.01 ? `gets back ${fmtMoney(b)}` : b < -0.01 ? `owes ${fmtMoney(Math.abs(b))}` : 'settled ✓';
-                return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #f0fdf4">
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#15803d);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;flex-shrink:0">${m.name[0]?.toUpperCase()}</div>
-                        <span style="font-size:14px;font-weight:600;color:var(--text)">${escHtml(m.name)}</span>
-                    </div>
-                    <span style="font-size:13px;font-weight:700;color:${color}">${label}</span>
-                </div>`;
-            }).join('')}
+            <div style="text-align:right">
+                <div style="font-size:11px;opacity:0.65;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Each person</div>
+                <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-top:2px">${fmtMoney(perPerson)}</div>
+            </div>
         </div>
 
-        <div style="background:white;border:1px solid var(--border-soft);border-radius:16px;overflow:hidden;margin-bottom:80px">
-            <div style="padding:14px 18px;border-bottom:1px solid #f0fdf4;font-size:13px;font-weight:700;color:var(--text)">How to settle up 💸</div>
+        <!-- Settle up (most prominent) -->
+        <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px">
+            <div style="padding:14px 18px;border-bottom:1px solid #f0fdf4;display:flex;align-items:center;gap:8px">
+                <span style="font-size:15px">💸</span>
+                <span style="font-size:14px;font-weight:700;color:var(--text)">Who pays who</span>
+            </div>
             ${txns.length ? txns.map(tx => `
                 <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #f0fdf4">
-                    <div style="width:36px;height:36px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">💸</div>
-                    <div style="flex:1">
-                        <div style="font-size:14px;font-weight:700;color:var(--text)">
+                    <div style="width:34px;height:34px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#ef4444;flex-shrink:0">${(memberMap[tx.from]||'?')[0].toUpperCase()}</div>
+                    <div style="flex:1;min-width:0">
+                        <div style="font-size:13px;font-weight:700;color:var(--text)">
                             <span style="color:#ef4444">${escHtml(memberMap[tx.from] || tx.from)}</span>
-                            &nbsp;→&nbsp;
+                            <span style="color:var(--muted);font-weight:500"> pays </span>
                             <span style="color:#16a34a">${escHtml(memberMap[tx.to] || tx.to)}</span>
                         </div>
                     </div>
-                    <div style="font-size:16px;font-weight:800;color:var(--text)">${fmtMoney(tx.amount)}</div>
+                    <div style="font-size:17px;font-weight:800;color:var(--text);white-space:nowrap">${fmtMoney(tx.amount)}</div>
                 </div>
-            `).join('') : `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">✅ Everyone is settled up!</div>`}
+            `).join('')
+            : `<div style="padding:20px 18px;display:flex;align-items:center;gap:12px">
+                <span style="font-size:24px">${allSettled ? '🎉' : '➕'}</span>
+                <span style="font-size:13px;color:var(--muted)">${allSettled ? 'Everyone is settled up!' : 'Add expenses to see who owes what.'}</span>
+               </div>`}
+        </div>
+
+        <!-- Per-person balance -->
+        <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:80px">
+            <div style="padding:14px 18px;border-bottom:1px solid #f0fdf4;font-size:14px;font-weight:700;color:var(--text)">Balance per person</div>
+            ${trip.members.map(m => {
+                const b     = Math.round((balances[m.id] || 0) * 100) / 100;
+                const color = b > 0.01 ? '#16a34a' : b < -0.01 ? '#ef4444' : '#6b7280';
+                const bg    = b > 0.01 ? '#f0fdf4'  : b < -0.01 ? '#fef2f2'  : '#f8fafc';
+                const label = b > 0.01 ? `+${fmtMoney(b)}` : b < -0.01 ? `-${fmtMoney(Math.abs(b))}` : '✓ even';
+                return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #f0fdf4">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#15803d);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;flex-shrink:0">${(m.name||'?')[0].toUpperCase()}</div>
+                        <span style="font-size:14px;font-weight:600;color:var(--text)">${escHtml(m.name)}</span>
+                    </div>
+                    <span style="font-size:13px;font-weight:800;padding:4px 10px;border-radius:99px;background:${bg};color:${color}">${label}</span>
+                </div>`;
+            }).join('')}
         </div>
     `;
 }
@@ -409,8 +438,10 @@ function saveTrip() {
 function deleteTripConfirm(id) {
     const trip = trips.find(t => t.id === id);
     if (!trip || !confirm(`Delete "${trip.name}"? This cannot be undone.`)) return;
+    const shareCode = trip.shareCode || null;
     trips = trips.filter(t => t.id !== id);
     saveTrips();
+    if (shareCode && typeof dbDeleteSharedTrip === 'function') dbDeleteSharedTrip(shareCode);
     activeTripId = null;
     closeTripDetail();
     toast('Trip deleted');
