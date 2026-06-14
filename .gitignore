@@ -1,0 +1,9 @@
+# Old single-file version
+subscription-tracker.html
+
+# Claude Code workspace files
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
