@@ -6,8 +6,16 @@ let tripExpenseEditId = null;
 let selectedTeCat = 'Food & Dining';
 let createTripEditId = null;
 let createTripSelectedEmoji = '✈️';
+let eventEditId = null;
+let selectedEventEmoji = '🎉';
 
 const TRIP_EMOJIS = ['✈️','🏖️','🎉','🎂','🏔️','🎭','🍽️','🏕️','🚗','🎮','🏋️','🛳️','🌴','🎪','🎵'];
+const ACTIVITY_EMOJIS = [
+    '🐴','🚢','🎭','🏖️','🎡','🎪','🎵','🍽️',
+    '🥂','🎸','🎿','🏊','🎯','🎲','🗺️','🏛️',
+    '🌄','🎨','🎬','⛷️','🤿','🏌️','🧘','🎠',
+    '🛥️','🏕️','🌋','🏇','🧗','🚵',
+];
 
 function loadTrips() {
     try { return JSON.parse(localStorage.getItem(getKey('trips')) || '[]'); } catch { return []; }
@@ -185,18 +193,22 @@ function renderTripDetail() {
 
         <div style="display:flex;background:#f0fdf4;border-radius:12px;padding:4px;gap:4px;margin-bottom:18px">
             <button id="tripTabExpBtn" onclick="setTripTab('expenses')"
-                style="flex:1;padding:9px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:${tripTab==='expenses'?'white':'transparent'};color:${tripTab==='expenses'?'var(--text)':'var(--muted)'};box-shadow:${tripTab==='expenses'?'0 1px 6px rgba(0,0,0,0.1)':'none'}">
+                style="flex:1;padding:9px;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:${tripTab==='expenses'?'white':'transparent'};color:${tripTab==='expenses'?'var(--text)':'var(--muted)'};box-shadow:${tripTab==='expenses'?'0 1px 6px rgba(0,0,0,0.1)':'none'}">
                 Expenses
             </button>
+            <button id="tripTabEvtBtn" onclick="setTripTab('events')"
+                style="flex:1;padding:9px;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:${tripTab==='events'?'white':'transparent'};color:${tripTab==='events'?'var(--text)':'var(--muted)'};box-shadow:${tripTab==='events'?'0 1px 6px rgba(0,0,0,0.1)':'none'}">
+                Events
+            </button>
             <button id="tripTabSplitBtn" onclick="setTripTab('split')"
-                style="flex:1;padding:9px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:${tripTab==='split'?'white':'transparent'};color:${tripTab==='split'?'var(--text)':'var(--muted)'};box-shadow:${tripTab==='split'?'0 1px 6px rgba(0,0,0,0.1)':'none'}">
+                style="flex:1;padding:9px;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;background:${tripTab==='split'?'white':'transparent'};color:${tripTab==='split'?'var(--text)':'var(--muted)'};box-shadow:${tripTab==='split'?'0 1px 6px rgba(0,0,0,0.1)':'none'}">
                 Split
             </button>
         </div>
 
         <div id="tripTabContent"></div>
 
-        <button onclick="openTripExpenseModal()"
+        <button id="tripDetailFab" onclick="openTripAddModal()"
             style="position:fixed;bottom:88px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;font-size:26px;cursor:pointer;box-shadow:0 6px 24px rgba(22,163,74,0.45);z-index:50;display:flex;align-items:center;justify-content:center;transition:transform 0.15s"
             onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform=''">+</button>
     `;
@@ -206,22 +218,31 @@ function renderTripDetail() {
 
 function setTripTab(tab) {
     tripTab = tab;
-    const expBtn   = document.getElementById('tripTabExpBtn');
-    const splitBtn = document.getElementById('tripTabSplitBtn');
-    [expBtn, splitBtn].forEach((btn, i) => {
+    const tabs = { expenses: 'tripTabExpBtn', events: 'tripTabEvtBtn', split: 'tripTabSplitBtn' };
+    Object.entries(tabs).forEach(([t, id]) => {
+        const btn = document.getElementById(id);
         if (!btn) return;
-        const active = (i === 0 && tab === 'expenses') || (i === 1 && tab === 'split');
-        btn.style.background  = active ? 'white' : 'transparent';
-        btn.style.color       = active ? 'var(--text)' : 'var(--muted)';
-        btn.style.boxShadow   = active ? '0 1px 6px rgba(0,0,0,0.1)' : 'none';
+        const active = t === tab;
+        btn.style.background = active ? 'white' : 'transparent';
+        btn.style.color      = active ? 'var(--text)' : 'var(--muted)';
+        btn.style.boxShadow  = active ? '0 1px 6px rgba(0,0,0,0.1)' : 'none';
     });
+    const fab = document.getElementById('tripDetailFab');
+    if (fab) fab.style.display = tab === 'split' ? 'none' : 'flex';
     renderTripTabContent();
+}
+
+function openTripAddModal() {
+    if (tripTab === 'events') openEventModal();
+    else openTripExpenseModal();
 }
 
 function renderTripTabContent() {
     const el = document.getElementById('tripTabContent');
     if (!el) return;
-    tripTab === 'expenses' ? renderTripExpenses(el) : renderTripSplit(el);
+    if (tripTab === 'expenses') renderTripExpenses(el);
+    else if (tripTab === 'events') renderTripEvents(el);
+    else renderTripSplit(el);
 }
 
 function renderTripExpenses(el) {
@@ -623,9 +644,9 @@ function deleteTripExpense(id) {
 // ── Share / Invite ─────────────────────────────────────────────────────
 async function _pushTripToFirestore(trip) {
     if (!trip?.shareCode) return;
-    // Only update expenses — members are managed separately by dbJoinTrip
-    if (typeof dbUpdateSharedExpenses === 'function') {
-        await dbUpdateSharedExpenses(trip.shareCode, trip.expenses || []);
+    // Only update expenses+events — members are managed separately by dbJoinTrip
+    if (typeof dbUpdateSharedTripData === 'function') {
+        await dbUpdateSharedTripData(trip.shareCode, trip.expenses || [], trip.events || []);
     }
 }
 
@@ -635,8 +656,9 @@ async function _initSharedTripDoc(trip) {
         name: trip.name, emoji: trip.emoji,
         startDate: trip.startDate, endDate: trip.endDate,
         ownerId: trip.ownerId,
-        members: trip.members || [],
+        members:  trip.members  || [],
         expenses: (trip.expenses || []).map(({ receiptThumb, ...e }) => e),
+        events:   trip.events   || [],
     });
 }
 
@@ -651,6 +673,7 @@ async function refreshSharedTrip(shareCode) {
             ...trips[idx],
             members:  data.members  || trips[idx].members,
             expenses: data.expenses || trips[idx].expenses || [],
+            events:   data.events   || trips[idx].events   || [],
         };
         localStorage.setItem(getKey('trips'), JSON.stringify(trips));
         if (activeTripId === trips[idx].id) renderTripDetail();
@@ -745,8 +768,9 @@ async function joinTripByCode(shareCode) {
         startDate: tripData.startDate,
         endDate:   tripData.endDate,
         ownerId:   tripData.ownerId,
-        members:   tripData.members || [],
+        members:   tripData.members  || [],
         expenses:  tripData.expenses || [],
+        events:    tripData.events   || [],
         createdAt: tripData.createdAt || new Date().toISOString(),
         isShared:  true,
     };
@@ -757,4 +781,149 @@ async function joinTripByCode(shareCode) {
     activeTripId = localTrip.id;
     showPage('trips');
     toast(`${alreadyIn ? 'Already in' : 'Joined'} ${tripData.emoji} ${tripData.name}!`);
+}
+
+// ── Trip Events ───────────────────────────────────────────────────────
+function renderTripEvents(el) {
+    const trip = getActiveTrip();
+    if (!trip) return;
+    const events = [...(trip.events || [])].sort((a, b) => {
+        const da = a.date + (a.time || '');
+        const db = b.date + (b.time || '');
+        return da.localeCompare(db);
+    });
+
+    if (!events.length) {
+        el.innerHTML = `<div style="text-align:center;padding:40px 20px">
+            <div style="font-size:44px;margin-bottom:12px">🗓️</div>
+            <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">No events yet</div>
+            <div style="font-size:13px;color:var(--muted)">Tap + to add a horseback ride, cruise, dinner…</div>
+        </div>`;
+        return;
+    }
+
+    el.innerHTML = `<div style="margin-bottom:80px">
+        ${events.map((ev, i) => {
+            const d     = fmtTripDate(ev.date);
+            const tStr  = ev.time ? ` · ${_fmt12h(ev.time)}` : '';
+            const isLast = i === events.length - 1;
+            return `
+            <div style="display:flex;gap:14px;margin-bottom:${isLast?'0':'4px'}">
+                <!-- Timeline spine -->
+                <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:36px">
+                    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #bbf7d0;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;z-index:1">${ev.emoji || '🎉'}</div>
+                    ${!isLast ? `<div style="width:2px;flex:1;min-height:16px;background:linear-gradient(to bottom,#bbf7d0,transparent);margin-top:2px"></div>` : ''}
+                </div>
+                <!-- Card -->
+                <div style="flex:1;background:white;border:1px solid var(--border-soft);border-radius:14px;padding:12px 14px;margin-bottom:10px">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:14px;font-weight:800;color:var(--text)">${escHtml(ev.name)}</div>
+                            <div style="font-size:12px;color:var(--muted);margin-top:3px">${d}${tStr}</div>
+                            ${ev.notes ? `<div style="font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.5;background:#f8fafc;border-radius:8px;padding:7px 10px">${escHtml(ev.notes)}</div>` : ''}
+                        </div>
+                        <div style="display:flex;gap:2px;flex-shrink:0">
+                            <button onclick="openEventModal(${ev.id})" style="padding:5px;border:none;background:none;cursor:pointer;color:#9ca3af" title="Edit">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button onclick="deleteEvent(${ev.id})" style="padding:5px;border:none;background:none;cursor:pointer;color:#d1d5db" title="Delete">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('')}
+    </div>`;
+}
+
+function _fmt12h(time24) {
+    if (!time24) return '';
+    const [h, m] = time24.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    return `${(h % 12) || 12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function openEventModal(editId = null) {
+    eventEditId = editId;
+    const trip = getActiveTrip();
+    const ev   = editId ? (trip?.events || []).find(e => e.id === editId) : null;
+
+    document.getElementById('evModalTitle').textContent = ev ? 'Edit Event' : 'Add Event';
+    document.getElementById('evName').value  = ev?.name  || '';
+    document.getElementById('evDate').value  = ev?.date  || new Date().toISOString().split('T')[0];
+    document.getElementById('evTime').value  = ev?.time  || '';
+    document.getElementById('evNotes').value = ev?.notes || '';
+    selectedEventEmoji = ev?.emoji || '🎉';
+    document.getElementById('evEmojiBtn').textContent = selectedEventEmoji;
+    document.getElementById('evEmojiPicker').style.display = 'none';
+    renderEventEmojiGrid();
+    document.getElementById('tripEventBackdrop').classList.remove('hidden');
+    setTimeout(() => document.getElementById('evName').focus(), 60);
+}
+
+function closeEventModal() {
+    document.getElementById('tripEventBackdrop').classList.add('hidden');
+}
+
+function toggleEvEmojiPicker() {
+    const p = document.getElementById('evEmojiPicker');
+    p.style.display = p.style.display === 'none' ? '' : 'none';
+}
+
+function renderEventEmojiGrid() {
+    const grid = document.getElementById('evEmojiGrid');
+    if (!grid) return;
+    grid.innerHTML = ACTIVITY_EMOJIS.map(e => {
+        const sel = e === selectedEventEmoji;
+        return `<button onclick="selectEventEmoji('${e}')"
+            style="width:40px;height:40px;border-radius:10px;border:2px solid ${sel?'var(--primary)':'transparent'};background:${sel?'#f0fdf4':'transparent'};font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s">${e}</button>`;
+    }).join('');
+}
+
+function selectEventEmoji(e) {
+    selectedEventEmoji = e;
+    document.getElementById('evEmojiBtn').textContent = e;
+    renderEventEmojiGrid();
+    document.getElementById('evEmojiPicker').style.display = 'none';
+}
+
+function saveEvent() {
+    const name  = document.getElementById('evName').value.trim();
+    const date  = document.getElementById('evDate').value;
+    const time  = document.getElementById('evTime').value;
+    const notes = document.getElementById('evNotes').value.trim();
+    if (!name) { toast('Enter an event name', 'error'); return; }
+    if (!date) { toast('Pick a date', 'error'); return; }
+
+    const trip = getActiveTrip();
+    if (!trip) return;
+    if (!trip.events) trip.events = [];
+
+    if (eventEditId) {
+        const idx = trip.events.findIndex(e => e.id === eventEditId);
+        if (idx !== -1) trip.events[idx] = { ...trip.events[idx], name, emoji: selectedEventEmoji, date, time, notes };
+    } else {
+        trip.events.push({ id: Date.now(), name, emoji: selectedEventEmoji, date, time, notes, createdAt: new Date().toISOString() });
+    }
+
+    const tripIdx = trips.findIndex(t => t.id === trip.id);
+    if (tripIdx !== -1) trips[tripIdx] = trip;
+    saveTrips();
+    if (trip.shareCode) _pushTripToFirestore(trip);
+    closeEventModal();
+    renderTripTabContent();
+    toast(eventEditId ? 'Event updated' : 'Event added!');
+}
+
+function deleteEvent(id) {
+    const trip = getActiveTrip();
+    if (!trip) return;
+    trip.events = (trip.events || []).filter(e => e.id !== id);
+    const tripIdx = trips.findIndex(t => t.id === trip.id);
+    if (tripIdx !== -1) trips[tripIdx] = trip;
+    saveTrips();
+    if (trip.shareCode) _pushTripToFirestore(trip);
+    renderTripTabContent();
+    toast('Event removed');
 }

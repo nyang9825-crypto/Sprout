@@ -9,6 +9,8 @@
     <meta name="theme-color" content="#052e16">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sprout">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/styles.css?v=e24bb43">
     <!-- Firebase SDK (must load before app scripts) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -527,6 +529,66 @@
 
 <!-- Toast container -->
 <div id="toastContainer"></div>
+
+<!-- iOS Add to Home Screen banner -->
+<div id="a2hsBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;padding:0 12px 80px;pointer-events:none">
+    <div style="background:white;border-radius:20px;padding:18px 18px 18px 18px;box-shadow:0 -2px 30px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.06);pointer-events:all">
+        <div style="display:flex;align-items:flex-start;gap:14px">
+            <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#16a34a,#0d9488);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🌱</div>
+            <div style="flex:1;min-width:0">
+                <div style="font-size:15px;font-weight:800;color:#111827;margin-bottom:5px">Add Sprout to Home Screen</div>
+                <div style="font-size:13px;color:#6b7280;line-height:1.55">
+                    Tap
+                    <svg style="display:inline;vertical-align:middle;margin:0 2px" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                    then <strong style="color:#111827">Add to Home Screen</strong>
+                </div>
+            </div>
+            <button onclick="dismissA2hs()" style="width:28px;height:28px;border-radius:50%;border:none;background:#f3f4f6;cursor:pointer;font-size:14px;color:#6b7280;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0">✕</button>
+        </div>
+        <!-- Arrow pointing down to share button -->
+        <div style="text-align:center;margin-top:10px;font-size:11px;color:#9ca3af;font-weight:600;letter-spacing:0.3px">▼ find the share button at the bottom of Safari</div>
+    </div>
+</div>
+
+<!-- Trip Event Modal -->
+<div id="tripEventBackdrop" class="modal-backdrop hidden" onclick="if(event.target===this)closeEventModal()">
+    <div class="modal" style="max-width:420px">
+        <div class="modal-head">
+            <h3 id="evModalTitle">Add Event</h3>
+            <button class="close-btn" onclick="closeEventModal()">✕</button>
+        </div>
+        <div style="padding:0 24px 28px">
+            <!-- Emoji button + name -->
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                <button id="evEmojiBtn" onclick="toggleEvEmojiPicker()"
+                    style="width:52px;height:52px;border-radius:14px;border:1.5px solid var(--border);background:#f8fafc;font-size:26px;cursor:pointer;flex-shrink:0;transition:border-color 0.15s"
+                    title="Choose emoji">🎉</button>
+                <input id="evName" type="text" placeholder="Event name (e.g. Horseback Riding)" class="modal-input" style="flex:1">
+            </div>
+            <!-- Inline emoji picker -->
+            <div id="evEmojiPicker" style="display:none;background:#f8fafc;border-radius:12px;padding:10px;margin-bottom:14px">
+                <div id="evEmojiGrid" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+            </div>
+            <!-- Date + Time -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+                <div>
+                    <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Date</label>
+                    <input id="evDate" type="date" class="modal-input">
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Time (optional)</label>
+                    <input id="evTime" type="time" class="modal-input">
+                </div>
+            </div>
+            <!-- Notes -->
+            <div style="margin-bottom:22px">
+                <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Notes (optional)</label>
+                <textarea id="evNotes" placeholder="Any details, meeting spot, what to bring…" class="modal-input" style="resize:none;height:72px;line-height:1.55"></textarea>
+            </div>
+            <button onclick="saveEvent()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Save Event</button>
+        </div>
+    </div>
+</div>
 
 <!-- Add / Edit Modal -->
 <div id="modalBackdrop" class="modal-backdrop hidden" onclick="closeModalBackdrop(event)">

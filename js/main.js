@@ -15,6 +15,36 @@ function _hideLoader() {
     if (el) el.style.display = 'none';
 }
 
+function _maybeShowA2hs() {
+    const isIOS        = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone = window.navigator.standalone === true;
+    const dismissed    = localStorage.getItem('sprout_a2hs_dismissed');
+    if (!isIOS || isStandalone || dismissed) return;
+    setTimeout(() => {
+        const banner = document.getElementById('a2hsBanner');
+        if (banner) {
+            banner.style.display = '';
+            banner.style.transform = 'translateY(100%)';
+            banner.style.opacity = '0';
+            banner.style.transition = 'transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                banner.style.transform = '';
+                banner.style.opacity = '1';
+            }));
+        }
+    }, 5000);
+}
+
+function dismissA2hs() {
+    localStorage.setItem('sprout_a2hs_dismissed', '1');
+    const banner = document.getElementById('a2hsBanner');
+    if (!banner) return;
+    banner.style.transition = 'transform 0.3s ease, opacity 0.25s ease';
+    banner.style.transform  = 'translateY(100%)';
+    banner.style.opacity    = '0';
+    setTimeout(() => { banner.style.display = 'none'; }, 350);
+}
+
 function _bootApp(user) {
     _applyUserUI(user);
     subs      = loadSubs();
@@ -24,6 +54,7 @@ function _bootApp(user) {
     safeRun(initGmailUI);
     safeRun(renderAll);
     safeRun(renderHomePage);
+    _maybeShowA2hs();
 
     // Swipe-down close for sheet modals
     setTimeout(() => {
