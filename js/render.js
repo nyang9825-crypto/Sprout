@@ -31,8 +31,12 @@ function renderDashboard() {
 
     const list = document.getElementById('dashUpcomingList');
     list.innerHTML = upcoming30.length === 0
-        ? `<div class="empty-state"><div class="empty-icon">🎉</div><div class="empty-title">Nothing due soon</div><div class="empty-sub">No renewals in the next 30 days.</div></div>`
+        ? emptyState('empty_ok', 'Nothing due soon', 'No renewals in the next 30 days.')
         : upcoming30.map(s => renderSubItem(s, true)).join('');
+}
+
+function emptyState(icon, title, sub) {
+    return `<div class="empty-state"><div class="empty-icon-svg">${ICONS[icon] || ICONS.empty_list}</div><div class="empty-title">${title}</div><div class="empty-sub">${sub}</div></div>`;
 }
 
 function renderSubscriptions() {
@@ -58,10 +62,9 @@ function renderSubscriptions() {
 
     const list = document.getElementById('subList');
     if (filtered.length === 0) {
-        const empty = subs.length === 0
-            ? { icon: '📋', title: 'No subscriptions yet', sub: 'Click "+ Add New" to track your first subscription.' }
-            : { icon: '🔍', title: 'No matches',           sub: 'Try a different search or filter.' };
-        list.innerHTML = `<div class="empty-state"><div class="empty-icon">${empty.icon}</div><div class="empty-title">${empty.title}</div><div class="empty-sub">${empty.sub}</div></div>`;
+        list.innerHTML = subs.length === 0
+            ? emptyState('empty_list',   'No subscriptions yet', 'Click "+ Add New" to track your first subscription.')
+            : emptyState('empty_search', 'No matches',           'Try a different search or filter.');
     } else {
         list.innerHTML = filtered.map(s => renderSubItem(s, true)).join('');
     }
@@ -77,7 +80,7 @@ function renderAnalytics() {
         document.getElementById('anaMostExpensiveSub').textContent = 'no subs yet';
         document.getElementById('anaTopCat').textContent           = '—';
         document.getElementById('anaTopCatSub').textContent        = 'by spend';
-        document.getElementById('catBreakdown').innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No data yet</div><div class="empty-sub">Add subscriptions to see your breakdown.</div></div>`;
+        document.getElementById('catBreakdown').innerHTML = emptyState('empty_chart', 'No data yet', 'Add subscriptions to see your breakdown.');
         return;
     }
 
@@ -130,6 +133,6 @@ function renderUpcoming() {
 
     const list = document.getElementById('upcomingPageList');
     list.innerHTML = upcoming.length === 0
-        ? `<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">All clear!</div><div class="empty-sub">No renewals in the next 30 days.</div></div>`
+        ? emptyState('empty_ok', 'All clear!', 'No renewals in the next 30 days.')
         : upcoming.map(s => renderSubItem(s, true)).join('');
 }

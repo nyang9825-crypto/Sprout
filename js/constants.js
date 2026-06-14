@@ -64,6 +64,23 @@ const KNOWN_SENDERS = {
     'linear.app':         { name: 'Linear',                emoji: '📋', cost: 8.00,  category: 'Software' },
 };
 
+// name → Google favicon URL at 64px (first matching domain wins for duplicates)
+const BRAND_LOGOS = {};
+Object.entries(KNOWN_SENDERS).forEach(([domain, svc]) => {
+    if (!BRAND_LOGOS[svc.name]) {
+        BRAND_LOGOS[svc.name] = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64';
+    }
+});
+
+// Deduplicated, alphabetically sorted catalog for Quick Add modal (includes logo)
+const SERVICE_CATALOG = (function () {
+    const seen = new Set();
+    return Object.entries(KNOWN_SENDERS)
+        .filter(([, s]) => { if (seen.has(s.name)) return false; seen.add(s.name); return true; })
+        .map(([domain, s]) => ({ ...s, logo: 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64' }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+})();
+
 const BILLING_KEYWORDS = [
     'receipt', 'invoice', 'billing', 'subscription', 'renewal',
     'payment confirmation', 'order confirmation', 'your order',

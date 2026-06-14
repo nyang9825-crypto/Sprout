@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="iconClip">
+      <rect width="1024" height="1024" rx="220" ry="220"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#iconClip)">
+
+    <!-- Background -->
+    <rect width="1024" height="1024" fill="#091a0f"/>
+
+    <!-- Arc / crescent swoosh -->
+    <path d="
+      M 148 484
+      C 258 44 658 72 822 402
+      C 682 222 342 242 166 522
+      C 156 504 150 493 148 484
+      Z
+    " fill="#4ade80"/>
+
+    <!-- Three ascending leaves (bottom-aligned at y=850) -->
+
+    <!-- Small leaf -->
+    <path d="M 268 668 C 308 683 308 836 268 850 C 228 836 228 683 268 668 Z" fill="#4ade80"/>
+
+    <!-- Medium leaf -->
+    <path d="M 428 618 C 485 636 485 832 428 850 C 371 832 371 636 428 618 Z" fill="#4ade80"/>
+
+    <!-- Large leaf -->
+    <path d="M 614 558 C 691 580 691 828 614 850 C 537 828 537 580 614 558 Z" fill="#4ade80"/>
+
+  </g>
+</svg>

@@ -66,13 +66,30 @@ function animateValue(el, to, isCurrency = true, duration = 600) {
     requestAnimationFrame(tick);
 }
 
+function letterAvatar(sub) {
+    const color  = CAT_COLORS[sub.category] || '#6b7280';
+    const letter = (sub.name || '?')[0].toUpperCase();
+    return `<div class="sub-emoji letter-avatar" style="background:${color}18;border-color:${color}30;color:${color}">${letter}</div>`;
+}
+
+function subIconHTML(sub) {
+    const logo = BRAND_LOGOS[sub.name];
+    const bg   = subBgColor(sub.category);
+    if (!logo) return letterAvatar(sub);
+    const color  = CAT_COLORS[sub.category] || '#6b7280';
+    const letter = (sub.name || '?')[0].toUpperCase();
+    return `<div class="sub-emoji sub-logo" style="background:${bg}">` +
+        `<img src="${logo}" alt="${escHtml(sub.name)}" class="brand-logo"` +
+        ` onerror="this.outerHTML='<div class=\\"sub-emoji letter-avatar\\" style=\\"background:${color}18;border-color:${color}30;color:${color}\\">${letter}</div>'" /></div>`;
+}
+
 function renderSubItem(sub, showDays = false) {
     const days = daysUntil(sub.renewalDate);
     const monthly = toMonthly(sub.cost, sub.cycle);
     const urgentClass = days >= 0 && days <= 3 ? ' sub-item-urgent' : '';
     return `
         <div class="sub-item${urgentClass}">
-            <div class="sub-emoji" style="background:${subBgColor(sub.category)}">${sub.emoji || '📦'}</div>
+            ${subIconHTML(sub)}
             <div class="sub-info">
                 <div class="sub-name">${escHtml(sub.name)}</div>
                 <div class="sub-meta">${sub.category} · Renews ${new Date(sub.renewalDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
@@ -84,8 +101,8 @@ function renderSubItem(sub, showDays = false) {
                     <div class="sub-cost-main">$${sub.cost.toFixed(2)}<span style="font-size:12px;font-weight:500;color:var(--muted)">${cycleLabel(sub.cycle)}</span></div>
                     ${sub.cycle !== 'monthly' ? `<div class="sub-cost-cycle">$${monthly.toFixed(2)}/mo equiv.</div>` : ''}
                 </div>
-                <button class="icon-btn edit" onclick="openModal(${sub.id})" title="Edit">✏️</button>
-                <button class="icon-btn delete" onclick="deleteSub(${sub.id})" title="Delete">🗑️</button>
+                <button class="icon-btn edit" onclick="openModal(${sub.id})" title="Edit">${ICONS.edit}</button>
+                <button class="icon-btn delete" onclick="deleteSub(${sub.id})" title="Delete">${ICONS.trash}</button>
             </div>
         </div>
     `;

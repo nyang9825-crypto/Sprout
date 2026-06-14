@@ -5,3 +5,4 @@ let filterCategory = 'All';
 
 let gmailToken = null;
 let detectedSubs = [];
+let detectedSource = 'gmail';

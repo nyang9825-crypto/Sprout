@@ -1,3 +1,52 @@
+function showModalTab(tab) {
+    const isCatalog = tab === 'catalog';
+    document.getElementById('catalogSection').classList.toggle('hidden', !isCatalog);
+    document.getElementById('manualSection').classList.toggle('hidden', isCatalog);
+    document.getElementById('modalActions').classList.toggle('hidden', isCatalog);
+    document.getElementById('tabCatalog').classList.toggle('active', isCatalog);
+    document.getElementById('tabManual').classList.toggle('active', !isCatalog);
+    document.querySelector('#modalBackdrop .modal').classList.toggle('modal-wide', isCatalog);
+    if (isCatalog) buildCatalog(document.getElementById('catalogSearch').value);
+}
+
+function buildCatalog(query) {
+    const q = (query || '').toLowerCase();
+    const filtered = SERVICE_CATALOG.filter(s => !q || s.name.toLowerCase().includes(q));
+    window._catalogFiltered = filtered;
+    const grid = document.getElementById('catalogGrid');
+    if (!filtered.length) {
+        grid.innerHTML = '<p class="catalog-empty">No match — use "Enter Manually" to add it.</p>';
+        return;
+    }
+    grid.innerHTML = filtered.map((s, i) => {
+        const logoHtml = s.logo
+            ? `<img src="${s.logo}" alt="${escHtml(s.name)}" class="catalog-brand-logo"` +
+              ` onerror="this.style.display='none';this.nextSibling.style.display='inline'" />` +
+              `<span class="catalog-tile-icon" style="display:none">${s.emoji}</span>`
+            : `<span class="catalog-tile-icon">${s.emoji}</span>`;
+        return `<button class="catalog-tile" onclick="fillFromCatalog(${i})">
+            <div class="catalog-logo-wrap">${logoHtml}</div>
+            <span class="catalog-tile-name">${escHtml(s.name)}</span>
+            <span class="catalog-tile-cost">$${s.cost}/mo</span>
+        </button>`;
+    }).join('');
+}
+
+function fillFromCatalog(idx) {
+    const s = (window._catalogFiltered || [])[idx];
+    if (!s) return;
+    document.getElementById('fName').value     = s.name;
+    document.getElementById('fCost').value     = s.cost;
+    document.getElementById('fCycle').value    = 'monthly';
+    document.getElementById('fCategory').value = s.category;
+    document.getElementById('fNotes').value    = '';
+    selectedEmoji = s.emoji;
+    clearFieldErrors();
+    buildEmojiPicker();
+    showModalTab('manual');
+    setTimeout(() => document.getElementById('fDate').focus(), 80);
+}
+
 function buildEmojiPicker() {
     const picker = document.getElementById('emojiPicker');
     picker.innerHTML = EMOJIS.map(e => `
@@ -30,7 +79,20 @@ function openModal(id = null) {
     selectedEmoji = '📦';
     clearFieldErrors();
 
-    if (id !== null) {
+    const isNew = id === null;
+    document.getElementById('modalTabs').classList.toggle('hidden', !isNew);
+
+    if (isNew) {
+        document.getElementById('modalTitle').textContent = 'Add Subscription';
+        document.getElementById('fName').value     = '';
+        document.getElementById('fCost').value     = '';
+        document.getElementById('fCycle').value    = 'monthly';
+        document.getElementById('fDate').value     = '';
+        document.getElementById('fCategory').value = 'Entertainment';
+        document.getElementById('fNotes').value    = '';
+        document.getElementById('catalogSearch').value = '';
+        showModalTab('catalog');
+    } else {
         const sub = subs.find(s => s.id === id);
         document.getElementById('modalTitle').textContent = 'Edit Subscription';
         document.getElementById('fName').value     = sub.name;
@@ -40,19 +102,15 @@ function openModal(id = null) {
         document.getElementById('fCategory').value = sub.category;
         document.getElementById('fNotes').value    = sub.notes || '';
         selectedEmoji = sub.emoji || '📦';
-    } else {
-        document.getElementById('modalTitle').textContent = 'Add Subscription';
-        document.getElementById('fName').value     = '';
-        document.getElementById('fCost').value     = '';
-        document.getElementById('fCycle').value    = 'monthly';
-        document.getElementById('fDate').value     = '';
-        document.getElementById('fCategory').value = 'Entertainment';
-        document.getElementById('fNotes').value    = '';
+        showModalTab('manual');
     }
 
     buildEmojiPicker();
     document.getElementById('modalBackdrop').classList.remove('hidden');
-    setTimeout(() => document.getElementById('fName').focus(), 100);
+    setTimeout(() => {
+        if (isNew) document.getElementById('catalogSearch').focus();
+        else document.getElementById('fName').focus();
+    }, 100);
 }
 
 function closeModal() {

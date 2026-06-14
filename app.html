@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SubTrack — Subscription Manager</title>
+    <title>Sprout — Where Your Money Grows</title>
+    <link rel="icon" type="image/svg+xml" href="sprout-logo.svg">
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -14,33 +15,40 @@
     <!-- ── Sidebar ── -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <div class="s-icon">📊</div>
-            <span>SubTrack</span>
+            <div class="s-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                    <path d="M 2.5 12 C 6 1 18 1 22 9 L 20.5 10.5 C 17 3.5 7 3.5 4 13 Z"/>
+                    <path d="M 6.5 14 C 8.3 14.8 8.3 20.2 6.5 21 C 4.7 20.2 4.7 14.8 6.5 14 Z"/>
+                    <path d="M 12 11.5 C 14.5 12.5 14.5 20 12 21 C 9.5 20 9.5 12.5 12 11.5 Z"/>
+                    <path d="M 17.5 9 C 20.7 10.2 20.7 19.8 17.5 21 C 14.3 19.8 14.3 10.2 17.5 9 Z"/>
+                </svg>
+            </div>
+            <span>Sprout</span>
         </div>
 
         <a href="index.html" class="nav-item" style="text-decoration:none;margin-bottom:12px;border:1px solid rgba(110,231,183,0.15)">
-            <span class="nav-icon">🌿</span> Back to Home
+            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span> Back to Home
         </a>
 
         <p class="nav-label">Menu</p>
         <button class="nav-item active" onclick="showPage('dashboard')">
-            <span class="nav-icon">🏠</span> Dashboard
+            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard
         </button>
         <button class="nav-item" onclick="showPage('subscriptions')">
-            <span class="nav-icon">📋</span> Subscriptions
+            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span> Subscriptions
         </button>
         <button class="nav-item" onclick="showPage('analytics')">
-            <span class="nav-icon">📈</span> Analytics
+            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span> Analytics
         </button>
         <button class="nav-item" onclick="showPage('upcoming')">
-            <span class="nav-icon">🔔</span> Upcoming Renewals
+            <span class="nav-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span> Upcoming Renewals
         </button>
 
         <div class="sidebar-bottom">
             <div class="user-badge">
                 <div class="avatar">S</div>
                 <div class="user-badge-info">
-                    <div class="user-badge-name">SubTrack</div>
+                    <div class="user-badge-name">Sprout</div>
                     <div class="user-badge-tier">Demo Mode</div>
                 </div>
             </div>
@@ -59,25 +67,25 @@
 
             <div class="stats-grid">
                 <div class="stat-card blue">
-                    <div class="stat-icon">💸</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
                     <p class="stat-label">Monthly Spend</p>
                     <p class="stat-value">$<span id="dashMonthly">0.00</span></p>
                     <p class="stat-sub">per month</p>
                 </div>
                 <div class="stat-card green">
-                    <div class="stat-icon">📅</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
                     <p class="stat-label">Yearly Spend</p>
                     <p class="stat-value">$<span id="dashYearly">0.00</span></p>
                     <p class="stat-sub">projected this year</p>
                 </div>
                 <div class="stat-card orange">
-                    <div class="stat-icon">📦</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
                     <p class="stat-label">Active Subscriptions</p>
                     <p class="stat-value"><span id="dashCount">0</span></p>
                     <p class="stat-sub">services tracked</p>
                 </div>
                 <div class="stat-card red">
-                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
                     <p class="stat-label">Renewals This Week</p>
                     <p class="stat-value"><span id="dashWeekRenewals">0</span></p>
                     <p class="stat-sub">coming up soon</p>
@@ -87,7 +95,7 @@
             <!-- Gmail Scan Card -->
             <div class="section-card" id="gmailCard" style="margin-bottom:20px">
                 <div class="section-head">
-                    <h3>📧 Auto-Detect from Gmail</h3>
+                    <h3>Auto-Detect from Gmail</h3>
                     <span class="badge" id="gmailBadge">Not connected</span>
                 </div>
                 <div id="gmailBody" style="padding:20px 20px 24px">
@@ -152,7 +160,7 @@
 
             <div class="section-card">
                 <div class="section-head">
-                    <h3>🔔 Upcoming Renewals</h3>
+                    <h3>Upcoming Renewals</h3>
                     <span class="badge urgent" id="dashUpcomingBadge">0 this week</span>
                 </div>
                 <div id="dashUpcomingList">
@@ -178,7 +186,8 @@
                     <input type="text" placeholder="Search subscriptions..." id="searchInput" oninput="renderSubscriptions()" />
                 </div>
                 <div class="topbar-right">
-                    <button class="btn-export" onclick="exportCSV()">📥 Export CSV</button>
+                    <button class="btn-export" onclick="exportCSV()">Export</button>
+                    <button class="btn-import-csv" onclick="triggerCSVImport()">Import Bank CSV</button>
                     <button class="btn-add" onclick="openModal()">+ Add New</button>
                 </div>
             </div>
@@ -199,25 +208,25 @@
 
             <div class="stats-grid" style="margin-bottom:28px">
                 <div class="stat-card blue">
-                    <div class="stat-icon">📆</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 1 18"/><polyline points="16 7 22 7 22 13"/></svg></div>
                     <p class="stat-label">Daily Average</p>
                     <p class="stat-value">$<span id="anaDaily">0.00</span></p>
                     <p class="stat-sub">per day</p>
                 </div>
                 <div class="stat-card orange">
-                    <div class="stat-icon">💰</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
                     <p class="stat-label">Most Expensive</p>
                     <p class="stat-value" id="anaMostExpensive">—</p>
                     <p class="stat-sub" id="anaMostExpensiveSub">no subs yet</p>
                 </div>
                 <div class="stat-card green">
-                    <div class="stat-icon">✅</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
                     <p class="stat-label">Avg. Per Subscription</p>
                     <p class="stat-value">$<span id="anaAvg">0.00</span></p>
                     <p class="stat-sub">monthly average</p>
                 </div>
                 <div class="stat-card red">
-                    <div class="stat-icon">🏷️</div>
+                    <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
                     <p class="stat-label">Top Category</p>
                     <p class="stat-value" id="anaTopCat" style="font-size:20px">—</p>
                     <p class="stat-sub" id="anaTopCatSub">by spend</p>
@@ -264,16 +273,16 @@
 <!-- Mobile bottom navigation -->
 <nav class="mobile-nav">
     <button class="mobile-nav-item active" onclick="showPage('dashboard')">
-        <span class="nav-emoji">🏠</span><span>Dashboard</span>
+        <span class="nav-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Dashboard</span>
     </button>
     <button class="mobile-nav-item" onclick="showPage('subscriptions')">
-        <span class="nav-emoji">📋</span><span>Subs</span>
+        <span class="nav-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span><span>Subs</span>
     </button>
     <button class="mobile-nav-item" onclick="showPage('analytics')">
-        <span class="nav-emoji">📈</span><span>Analytics</span>
+        <span class="nav-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span><span>Analytics</span>
     </button>
     <button class="mobile-nav-item" onclick="showPage('upcoming')">
-        <span class="nav-emoji">🔔</span><span>Upcoming</span>
+        <span class="nav-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span>Upcoming</span>
     </button>
 </nav>
 
@@ -288,62 +297,80 @@
             <button class="close-btn" onclick="closeModal()">✕</button>
         </div>
 
-        <div class="field">
-            <label>Subscription Name</label>
-            <input type="text" id="fName" placeholder="e.g. Netflix, Spotify, Adobe..." />
-            <p class="field-error hidden" id="errName"></p>
+        <!-- Tab switcher (hidden when editing) -->
+        <div class="modal-tabs" id="modalTabs">
+            <button class="modal-tab active" id="tabCatalog" onclick="showModalTab('catalog')">Quick Add</button>
+            <button class="modal-tab" id="tabManual" onclick="showModalTab('manual')">Enter Manually</button>
         </div>
 
-        <div class="field">
-            <label>Choose an Icon</label>
-            <div class="emoji-picker" id="emojiPicker"></div>
+        <!-- Quick Add catalog -->
+        <div id="catalogSection">
+            <input class="catalog-search" id="catalogSearch" type="text"
+                   placeholder="Search Netflix, Spotify, Adobe…"
+                   oninput="buildCatalog(this.value)" />
+            <div class="catalog-grid" id="catalogGrid"></div>
+            <p class="catalog-hint">Click a service to auto-fill · Can't find it? Use <strong>Enter Manually</strong></p>
         </div>
 
-        <div class="grid-2">
+        <!-- Manual form -->
+        <div id="manualSection" class="hidden">
             <div class="field">
-                <label>Cost</label>
-                <input type="number" id="fCost" placeholder="0.00" step="0.01" min="0" />
-                <p class="field-error hidden" id="errCost"></p>
+                <label>Subscription Name</label>
+                <input type="text" id="fName" placeholder="e.g. Netflix, Spotify, Adobe..." />
+                <p class="field-error hidden" id="errName"></p>
             </div>
+
             <div class="field">
-                <label>Billing Cycle</label>
-                <select id="fCycle">
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                    <option value="weekly">Weekly</option>
-                </select>
+                <label>Choose an Icon</label>
+                <div class="emoji-picker" id="emojiPicker"></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="field">
+                    <label>Cost</label>
+                    <input type="number" id="fCost" placeholder="0.00" step="0.01" min="0" />
+                    <p class="field-error hidden" id="errCost"></p>
+                </div>
+                <div class="field">
+                    <label>Billing Cycle</label>
+                    <select id="fCycle">
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                        <option value="weekly">Weekly</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="field">
+                    <label>Next Renewal Date</label>
+                    <input type="date" id="fDate" />
+                    <p class="field-error hidden" id="errDate"></p>
+                </div>
+                <div class="field">
+                    <label>Category</label>
+                    <select id="fCategory">
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Music">Music</option>
+                        <option value="Software">Software</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="News & Reading">News &amp; Reading</option>
+                        <option value="Health & Fitness">Health &amp; Fitness</option>
+                        <option value="Cloud Storage">Cloud Storage</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Notes (optional)</label>
+                <input type="text" id="fNotes" placeholder="e.g. Family plan, work expense..." />
             </div>
         </div>
 
-        <div class="grid-2">
-            <div class="field">
-                <label>Next Renewal Date</label>
-                <input type="date" id="fDate" />
-                <p class="field-error hidden" id="errDate"></p>
-            </div>
-            <div class="field">
-                <label>Category</label>
-                <select id="fCategory">
-                    <option value="Entertainment">🎬 Entertainment</option>
-                    <option value="Music">🎵 Music</option>
-                    <option value="Software">💻 Software</option>
-                    <option value="Gaming">🎮 Gaming</option>
-                    <option value="News & Reading">📰 News &amp; Reading</option>
-                    <option value="Health & Fitness">🏃 Health &amp; Fitness</option>
-                    <option value="Cloud Storage">☁️ Cloud Storage</option>
-                    <option value="Finance">💰 Finance</option>
-                    <option value="Shopping">🛍️ Shopping</option>
-                    <option value="Other">📦 Other</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="field">
-            <label>Notes (optional)</label>
-            <input type="text" id="fNotes" placeholder="e.g. Family plan, work expense..." />
-        </div>
-
-        <div class="modal-actions">
+        <div class="modal-actions hidden" id="modalActions">
             <button class="btn-cancel" onclick="closeModal()">Cancel</button>
             <button class="btn-save" onclick="saveSub()">Save Subscription</button>
         </div>
@@ -369,6 +396,7 @@
 </div>
 
 <!-- Scripts — loaded in dependency order -->
+<script src="js/icons.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/state.js"></script>
 <script src="js/storage.js"></script>
@@ -379,6 +407,7 @@
 <script src="js/modal.js"></script>
 <script src="js/subscriptions.js"></script>
 <script src="js/gmail.js"></script>
+<script src="js/csv.js"></script>
 <script src="js/main.js"></script>
 
 </body>

@@ -12,10 +12,10 @@ function toggleSetupHelp() {
 function saveClientId() {
     const id = document.getElementById('clientIdInput').value.trim();
     if (!id || !id.includes('.apps.googleusercontent.com')) {
-        alert("That doesn't look like a valid Google Client ID.\nIt should end with .apps.googleusercontent.com");
+        toast('Invalid Client ID — must end with .apps.googleusercontent.com', 'error');
         return;
     }
-    localStorage.setItem('st_gmail_client_id', id);
+    localStorage.setItem('sprout_gmail_client', id);
     showGmailStep('connect');
 }
 
@@ -27,7 +27,10 @@ function showGmailStep(step) {
 }
 
 function initGmailUI() {
-    const clientId = localStorage.getItem('st_gmail_client_id');
+    // Migrate from old SubTrack key
+    const legacy = localStorage.getItem('st_gmail_client_id');
+    if (legacy) { localStorage.setItem('sprout_gmail_client', legacy); localStorage.removeItem('st_gmail_client_id'); }
+    const clientId = localStorage.getItem('sprout_gmail_client');
     if (!clientId) {
         showGmailStep('setup');
         document.getElementById('gmailBadge').textContent = 'Setup needed';
@@ -38,7 +41,7 @@ function initGmailUI() {
 }
 
 function connectGmail() {
-    const clientId = localStorage.getItem('st_gmail_client_id');
+    const clientId = localStorage.getItem('sprout_gmail_client');
     if (!clientId) { showGmailStep('setup'); return; }
 
     showGmailStep('scanning');
@@ -131,28 +134,37 @@ async function scanGmail() {
         }
 
         detectedSubs = results;
-        showDetectedModal(results, messages.length);
+        showDetectedModal(results, `Scanned ${messages.length} billing emails`, 'gmail');
 
     } catch (err) {
-        alert('Gmail scan failed: ' + err.message);
+        toast('Gmail scan failed: ' + err.message, 'error');
         showGmailStep('connect');
     }
 }
 
-function showDetectedModal(results, emailsScanned) {
-    showGmailStep('done');
-    document.getElementById('gmailDoneText').textContent = `Found ${results.length} new subscription${results.length !== 1 ? 's' : ''}`;
-    document.getElementById('gmailDoneSub').textContent  = `Scanned ${emailsScanned} billing emails`;
-    document.getElementById('gmailBadge').textContent    = `${results.length} found`;
+function showDetectedModal(results, subtitleText, source) {
+    detectedSource = source || 'gmail';
+    if (detectedSource !== 'csv') {
+        showGmailStep('done');
+        document.getElementById('gmailDoneText').textContent = `Found ${results.length} new subscription${results.length !== 1 ? 's' : ''}`;
+        document.getElementById('gmailDoneSub').textContent  = subtitleText || '';
+        document.getElementById('gmailBadge').textContent    = `${results.length} found`;
+    }
 
     const today       = new Date();
     const defaultDate = new Date(today.getFullYear(), today.getMonth() + 1, 1).toISOString().split('T')[0];
 
     document.getElementById('detectedTitle').textContent = `Found ${results.length} subscription${results.length !== 1 ? 's' : ''}`;
-    document.getElementById('detectedList').innerHTML    = results.map((r, i) => `
+    document.getElementById('detectedList').innerHTML    = results.map((r, i) => {
+        const logo = BRAND_LOGOS[r.name];
+        const iconHtml = logo
+            ? `<img src="${logo}" alt="${r.name}" style="width:100%;height:100%;object-fit:contain;padding:5px;display:block;"` +
+              ` onerror="this.style.display='none';this.parentElement.textContent='${r.emoji}';" />`
+            : r.emoji;
+        return `
         <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)">
             <input type="checkbox" id="det_${i}" checked style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)" />
-            <div style="width:36px;height:36px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${r.emoji}</div>
+            <div style="width:36px;height:36px;background:#f0fdf4;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden">${iconHtml}</div>
             <div style="flex:1">
                 <div style="font-weight:600;font-size:14px">${r.name}</div>
                 <div style="font-size:12px;color:var(--muted)">${r.category}</div>
@@ -168,7 +180,8 @@ function showDetectedModal(results, emailsScanned) {
                     style="padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px" />
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     document.getElementById('detectedBackdrop').classList.remove('hidden');
 }
@@ -195,7 +208,7 @@ function importDetected() {
             cycle: 'monthly',
             renewalDate: date,
             category: r.category,
-            notes: 'Auto-detected from Gmail',
+            notes: detectedSource === 'csv' ? 'Imported from bank CSV' : 'Auto-detected from Gmail',
             createdAt: new Date().toISOString(),
         });
         imported++;

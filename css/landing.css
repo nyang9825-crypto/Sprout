@@ -499,6 +499,25 @@ body {
     display: block;
 }
 
+.metric-icon-svg {
+    width: 40px;
+    height: 40px;
+    background: var(--lime);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    color: var(--forest-light);
+}
+
+.metric-icon-svg svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
 .metric-val {
     font-size: 32px;
     font-weight: 900;
@@ -796,37 +815,23 @@ body {
 .feature-card {
     background: white;
     border-radius: 18px;
-    padding: 28px;
+    padding: 32px 28px;
     border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(22,163,74,0.06);
+    box-shadow: 0 2px 8px rgba(22,163,74,0.05);
     transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
-    overflow: hidden;
-}
-
-.feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--green), var(--teal));
 }
 
 .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(22,163,74,0.14);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(22,163,74,0.12);
 }
 
-.feature-icon {
-    width: 52px; height: 52px;
-    background: var(--lime);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    margin-bottom: 16px;
-    border: 1.5px solid var(--border);
+svg.feature-icon-svg {
+    width: 26px;
+    height: 26px;
+    display: block;
+    margin-bottom: 22px;
+    flex-shrink: 0;
 }
 
 .feature-card h3 {
@@ -881,6 +886,23 @@ body {
     font-size: 36px;
     display: block;
     margin-bottom: 10px;
+}
+
+.trust-badge-icon-svg {
+    width: 44px; height: 44px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    border: 1.5px solid var(--border);
+    color: var(--forest-light);
+}
+
+.trust-badge-icon-svg svg {
+    width: 20px;
+    height: 20px;
 }
 
 .trust-badge h4 {
