@@ -11,12 +11,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Sprout">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="css/styles.css?v=e24bb43">
+    <link rel="stylesheet" href="css/styles.css?v=f61bf77">
     <!-- Firebase SDK (must load before app scripts) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-    <script src="js/firebase-config.js?v=e24bb43"></script>
+    <script src="js/firebase-config.js?v=f61bf77"></script>
     <!-- Gmail OAuth -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -413,60 +413,63 @@
 
 <!-- Trip Expense Modal -->
 <div id="tripExpenseBackdrop" class="modal-backdrop hidden" onclick="if(event.target===this)closeTripExpenseModal()">
-    <div class="modal" style="max-width:480px;max-height:90vh;overflow-y:auto">
+    <div class="modal" style="max-width:480px;max-height:90dvh;overflow-y:auto">
         <div class="modal-head">
             <h3 id="teModalTitle">Add Expense</h3>
             <button class="close-btn" onclick="closeTripExpenseModal()">✕</button>
         </div>
-        <div style="padding:16px 24px 0">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Amount</label>
-            <div style="position:relative;margin-top:6px">
-                <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--muted);font-weight:700">$</span>
-                <input type="text" inputmode="decimal" id="teAmount" placeholder="0.00"
-                    style="width:100%;padding:14px 16px 14px 38px;font-size:28px;font-weight:800;color:var(--text);border:2px solid var(--border);border-radius:12px;outline:none;font-family:inherit"
-                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
-            </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px 24px 0">
+        <div style="padding:4px 4px 20px;display:flex;flex-direction:column;gap:16px">
+            <!-- Amount -->
             <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Description</label>
-                <input type="text" id="teName" placeholder="What was this for?"
-                    style="width:100%;margin-top:5px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none"
-                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"
-                    onkeydown="if(event.key==='Enter')saveTripExpense()" />
+                <label class="modal-label">Amount</label>
+                <div style="position:relative">
+                    <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--muted);font-weight:700;pointer-events:none">$</span>
+                    <input type="text" inputmode="decimal" id="teAmount" placeholder="0.00"
+                        class="modal-input" style="padding-left:40px;font-size:28px;font-weight:800;border-width:2px;border-radius:12px"
+                        onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+                </div>
             </div>
+            <!-- Description + Date side by side -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="modal-label">Description</label>
+                    <input type="text" id="teName" placeholder="What was this for?" class="modal-input"
+                        onkeydown="if(event.key==='Enter')saveTripExpense()" />
+                </div>
+                <div>
+                    <label class="modal-label">Date</label>
+                    <input type="date" id="teDate" class="modal-input" />
+                </div>
+            </div>
+            <!-- Category -->
             <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Date</label>
-                <input type="date" id="teDate" style="width:148px;margin-top:5px;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none"
-                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+                <label class="modal-label">Category</label>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+                    <button class="spend-cat-btn te-cat-btn active" data-cat="Food & Dining"    onclick="selectTeCat('Food & Dining')">🍽️<br><span>Food</span></button>
+                    <button class="spend-cat-btn te-cat-btn"        data-cat="Shopping"         onclick="selectTeCat('Shopping')">🛍️<br><span>Shopping</span></button>
+                    <button class="spend-cat-btn te-cat-btn"        data-cat="Transport"        onclick="selectTeCat('Transport')">🚗<br><span>Transport</span></button>
+                    <button class="spend-cat-btn te-cat-btn"        data-cat="Entertainment"    onclick="selectTeCat('Entertainment')">🎭<br><span>Fun</span></button>
+                    <button class="spend-cat-btn te-cat-btn"        data-cat="Health & Fitness" onclick="selectTeCat('Health & Fitness')">🏋️<br><span>Health</span></button>
+                    <button class="spend-cat-btn te-cat-btn"        data-cat="Travel"           onclick="selectTeCat('Travel')">✈️<br><span>Travel</span></button>
+                    <button class="spend-cat-btn te-cat-btn"        data-cat="Utilities"        onclick="selectTeCat('Utilities')">💡<br><span>Bills</span></button>
+                    <button class="spend-cat-btn te-cat-btn"        data-cat="Other"            onclick="selectTeCat('Other')">📦<br><span>Other</span></button>
+                </div>
             </div>
-        </div>
-        <div style="padding:12px 24px 0">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Category</label>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
-                <button class="spend-cat-btn te-cat-btn active" data-cat="Food & Dining"    onclick="selectTeCat('Food & Dining')">🍽️<br><span>Food</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Shopping"         onclick="selectTeCat('Shopping')">🛍️<br><span>Shopping</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Transport"        onclick="selectTeCat('Transport')">🚗<br><span>Transport</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Entertainment"    onclick="selectTeCat('Entertainment')">🎭<br><span>Fun</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Health & Fitness" onclick="selectTeCat('Health & Fitness')">🏋️<br><span>Health</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Travel"           onclick="selectTeCat('Travel')">✈️<br><span>Travel</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Utilities"        onclick="selectTeCat('Utilities')">💡<br><span>Bills</span></button>
-                <button class="spend-cat-btn te-cat-btn"        data-cat="Other"            onclick="selectTeCat('Other')">📦<br><span>Other</span></button>
+            <!-- Paid by -->
+            <div>
+                <label class="modal-label">Paid by</label>
+                <div id="tePaidBy"></div>
             </div>
-        </div>
-        <div style="padding:14px 24px 0">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Paid by</label>
-            <div id="tePaidBy" style="margin-top:8px"></div>
-        </div>
-        <div style="padding:14px 24px 0">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Split between</label>
-            <div id="teSplitBetween" style="margin-top:8px"></div>
-        </div>
-        <div style="padding:14px 24px 20px">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Notes (optional)</label>
-            <input type="text" id="teNotes" placeholder="e.g. dinner at beachside restaurant"
-                style="width:100%;margin-top:5px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none"
-                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+            <!-- Split between -->
+            <div>
+                <label class="modal-label">Split between</label>
+                <div id="teSplitBetween"></div>
+            </div>
+            <!-- Notes -->
+            <div>
+                <label class="modal-label">Notes (optional)</label>
+                <input type="text" id="teNotes" placeholder="e.g. dinner at beachside restaurant" class="modal-input" />
+            </div>
         </div>
         <div class="modal-actions" style="display:flex!important">
             <button class="btn-cancel" onclick="closeTripExpenseModal()">Cancel</button>
@@ -557,35 +560,38 @@
             <h3 id="evModalTitle">Add Event</h3>
             <button class="close-btn" onclick="closeEventModal()">✕</button>
         </div>
-        <div style="padding:0 24px 28px">
-            <!-- Emoji button + name -->
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-                <button id="evEmojiBtn" onclick="toggleEvEmojiPicker()"
-                    style="width:52px;height:52px;border-radius:14px;border:1.5px solid var(--border);background:#f8fafc;font-size:26px;cursor:pointer;flex-shrink:0;transition:border-color 0.15s"
-                    title="Choose emoji">🎉</button>
-                <input id="evName" type="text" placeholder="Event name (e.g. Horseback Riding)" class="modal-input" style="flex:1">
+        <div style="display:flex;flex-direction:column;gap:16px;padding:4px 4px 4px">
+            <!-- Emoji + Name -->
+            <div>
+                <label class="modal-label">Activity</label>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <button id="evEmojiBtn" onclick="toggleEvEmojiPicker()"
+                        style="width:48px;height:48px;border-radius:12px;border:1.5px solid var(--border);background:#f8fafc;font-size:24px;cursor:pointer;flex-shrink:0;transition:border-color 0.15s;display:flex;align-items:center;justify-content:center"
+                        title="Choose emoji">🎉</button>
+                    <input id="evName" type="text" placeholder="Horseback Riding, Sunset Cruise…" class="modal-input" style="flex:1">
+                </div>
             </div>
             <!-- Inline emoji picker -->
-            <div id="evEmojiPicker" style="display:none;background:#f8fafc;border-radius:12px;padding:10px;margin-bottom:14px">
+            <div id="evEmojiPicker" style="display:none;background:#f8fafc;border-radius:12px;padding:10px">
                 <div id="evEmojiGrid" style="display:flex;flex-wrap:wrap;gap:6px"></div>
             </div>
             <!-- Date + Time -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                 <div>
-                    <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Date</label>
+                    <label class="modal-label">Date</label>
                     <input id="evDate" type="date" class="modal-input">
                 </div>
                 <div>
-                    <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Time (optional)</label>
+                    <label class="modal-label">Time (optional)</label>
                     <input id="evTime" type="time" class="modal-input">
                 </div>
             </div>
             <!-- Notes -->
-            <div style="margin-bottom:22px">
-                <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px">Notes (optional)</label>
-                <textarea id="evNotes" placeholder="Any details, meeting spot, what to bring…" class="modal-input" style="resize:none;height:72px;line-height:1.55"></textarea>
+            <div>
+                <label class="modal-label">Notes (optional)</label>
+                <textarea id="evNotes" placeholder="Meeting spot, what to bring, booking details…" class="modal-input" style="height:72px"></textarea>
             </div>
-            <button onclick="saveEvent()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Save Event</button>
+            <button onclick="saveEvent()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--teal));color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Save Activity</button>
         </div>
     </div>
 </div>
@@ -704,70 +710,67 @@
             <button class="close-btn" onclick="closeSpendModal()">✕</button>
         </div>
 
-        <!-- Big amount input -->
-        <div style="padding:20px 24px 0">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Amount</label>
-            <div style="position:relative;margin-top:6px">
-                <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--muted);font-weight:700">$</span>
-                <input type="text" inputmode="decimal" id="spendAmount" placeholder="0.00"
-                    style="width:100%;padding:14px 16px 14px 38px;font-size:28px;font-weight:800;color:var(--text);border:2px solid var(--border);border-radius:12px;outline:none;font-family:inherit"
-                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
-            </div>
-        </div>
-
-        <!-- Receipt upload -->
-        <div style="padding:16px 24px 0">
-            <div id="spendReceiptPreview" style="display:none;margin-bottom:10px;border-radius:10px;overflow:hidden;max-height:180px">
-                <img id="spendReceiptImg" style="width:100%;object-fit:cover;display:block" />
-            </div>
-            <label for="spendReceiptFile" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--muted);font-weight:600;transition:all 0.15s"
-                onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'"
-                onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                📷 Upload or snap a receipt photo (optional)
-                <input type="file" id="spendReceiptFile" accept="image/*" capture="environment" onchange="onReceiptFileChange(event)" style="display:none" />
-            </label>
-        </div>
-
-        <!-- Description -->
-        <div style="padding:14px 24px 0">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Description</label>
-            <input type="text" id="spendName" placeholder="e.g. Dinner at Nobu, Groceries, Uber…"
-                style="width:100%;margin-top:6px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none"
-                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
-        </div>
-
-        <!-- Category -->
-        <div style="padding:14px 24px 0">
-            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Category</label>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
-                <button class="spend-cat-btn active" data-cat="Food & Dining"    onclick="selectSpendCat('Food & Dining')">🍽️<br><span>Food</span></button>
-                <button class="spend-cat-btn"         data-cat="Shopping"        onclick="selectSpendCat('Shopping')">🛍️<br><span>Shopping</span></button>
-                <button class="spend-cat-btn"         data-cat="Transport"       onclick="selectSpendCat('Transport')">🚗<br><span>Transport</span></button>
-                <button class="spend-cat-btn"         data-cat="Entertainment"   onclick="selectSpendCat('Entertainment')">🎭<br><span>Fun</span></button>
-                <button class="spend-cat-btn"         data-cat="Health & Fitness" onclick="selectSpendCat('Health & Fitness')">🏥<br><span>Health</span></button>
-                <button class="spend-cat-btn"         data-cat="Travel"          onclick="selectSpendCat('Travel')">✈️<br><span>Travel</span></button>
-                <button class="spend-cat-btn"         data-cat="Utilities"       onclick="selectSpendCat('Utilities')">💡<br><span>Bills</span></button>
-                <button class="spend-cat-btn"         data-cat="Other"           onclick="selectSpendCat('Other')">📦<br><span>Other</span></button>
-            </div>
-        </div>
-
-        <!-- Date + Notes -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 24px 20px">
+        <div style="display:flex;flex-direction:column;gap:16px;padding:4px 4px 4px">
+            <!-- Amount -->
             <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Date</label>
-                <input type="date" id="spendDate" style="width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none"
-                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+                <label class="modal-label">Amount</label>
+                <div style="position:relative">
+                    <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--muted);font-weight:700;pointer-events:none">$</span>
+                    <input type="text" inputmode="decimal" id="spendAmount" placeholder="0.00"
+                        class="modal-input" style="padding-left:40px;font-size:28px;font-weight:800;border-width:2px;border-radius:12px"
+                        onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+                </div>
             </div>
+
+            <!-- Receipt upload -->
             <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Notes (optional)</label>
-                <input type="text" id="spendNotes" placeholder="e.g. with family"
-                    style="width:100%;margin-top:6px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none"
-                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+                <div id="spendReceiptPreview" style="display:none;margin-bottom:10px;border-radius:10px;overflow:hidden;max-height:180px">
+                    <img id="spendReceiptImg" style="width:100%;object-fit:cover;display:block" />
+                </div>
+                <label for="spendReceiptFile" style="display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--muted);font-weight:600;transition:all 0.15s"
+                    onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'"
+                    onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    📷 Attach receipt photo (optional)
+                    <input type="file" id="spendReceiptFile" accept="image/*" capture="environment" onchange="onReceiptFileChange(event)" style="display:none" />
+                </label>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="modal-label">Description</label>
+                <input type="text" id="spendName" placeholder="e.g. Dinner at Nobu, Groceries, Uber…" class="modal-input" />
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label class="modal-label">Category</label>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+                    <button class="spend-cat-btn active" data-cat="Food & Dining"    onclick="selectSpendCat('Food & Dining')">🍽️<br><span>Food</span></button>
+                    <button class="spend-cat-btn"         data-cat="Shopping"        onclick="selectSpendCat('Shopping')">🛍️<br><span>Shopping</span></button>
+                    <button class="spend-cat-btn"         data-cat="Transport"       onclick="selectSpendCat('Transport')">🚗<br><span>Transport</span></button>
+                    <button class="spend-cat-btn"         data-cat="Entertainment"   onclick="selectSpendCat('Entertainment')">🎭<br><span>Fun</span></button>
+                    <button class="spend-cat-btn"         data-cat="Health & Fitness" onclick="selectSpendCat('Health & Fitness')">🏥<br><span>Health</span></button>
+                    <button class="spend-cat-btn"         data-cat="Travel"          onclick="selectSpendCat('Travel')">✈️<br><span>Travel</span></button>
+                    <button class="spend-cat-btn"         data-cat="Utilities"       onclick="selectSpendCat('Utilities')">💡<br><span>Bills</span></button>
+                    <button class="spend-cat-btn"         data-cat="Other"           onclick="selectSpendCat('Other')">📦<br><span>Other</span></button>
+                </div>
+            </div>
+
+            <!-- Date + Notes -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="modal-label">Date</label>
+                    <input type="date" id="spendDate" class="modal-input" />
+                </div>
+                <div>
+                    <label class="modal-label">Notes (optional)</label>
+                    <input type="text" id="spendNotes" placeholder="e.g. with family" class="modal-input" />
+                </div>
             </div>
         </div>
 
-        <div class="modal-actions" style="display:flex!important">
+        <div class="modal-actions" style="margin-top:20px;display:flex!important">
             <button class="btn-cancel" onclick="closeSpendModal()">Cancel</button>
             <button class="btn-save" id="spendSaveBtn" onclick="saveSpend()">Save Expense</button>
         </div>
@@ -812,14 +815,11 @@
         </div>
 
         <!-- Description + Date row -->
-        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:14px">
-            <input type="text" id="qaDesc" placeholder="What was it for? (optional)"
-                style="padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;outline:none;color:var(--text);min-width:0"
-                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'"
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+            <input type="text" id="qaDesc" placeholder="What was it for?"
+                class="modal-input" style="padding:13px 16px;border-radius:12px"
                 onkeydown="if(event.key==='Enter')submitQuickAdd()" />
-            <input type="date" id="qaDate"
-                style="padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;outline:none;color:var(--text);width:148px"
-                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'" />
+            <input type="date" id="qaDate" class="modal-input" style="padding:13px 12px;border-radius:12px" />
         </div>
 
         <!-- Receipt photo -->
@@ -853,24 +853,24 @@
 </div>
 
 <!-- Scripts — loaded in dependency order -->
-<script src="js/icons.js?v=e24bb43"></script>
-<script src="js/constants.js?v=e24bb43"></script>
-<script src="js/state.js?v=e24bb43"></script>
-<script src="js/storage.js?v=e24bb43"></script>
-<script src="js/toast.js?v=e24bb43"></script>
-<script src="js/helpers.js?v=e24bb43"></script>
-<script src="js/navigation.js?v=e24bb43"></script>
-<script src="js/render.js?v=e24bb43"></script>
-<script src="js/modal.js?v=e24bb43"></script>
-<script src="js/subscriptions.js?v=e24bb43"></script>
-<script src="js/auth.js?v=e24bb43"></script>
-<script src="js/db.js?v=e24bb43"></script>
-<script src="js/spending.js?v=e24bb43"></script>
-<script src="js/trips.js?v=e24bb43"></script>
-<script src="js/home.js?v=e24bb43"></script>
-<script src="js/gmail.js?v=e24bb43"></script>
-<script src="js/csv.js?v=e24bb43"></script>
-<script src="js/main.js?v=e24bb43"></script>
+<script src="js/icons.js?v=f61bf77"></script>
+<script src="js/constants.js?v=f61bf77"></script>
+<script src="js/state.js?v=f61bf77"></script>
+<script src="js/storage.js?v=f61bf77"></script>
+<script src="js/toast.js?v=f61bf77"></script>
+<script src="js/helpers.js?v=f61bf77"></script>
+<script src="js/navigation.js?v=f61bf77"></script>
+<script src="js/render.js?v=f61bf77"></script>
+<script src="js/modal.js?v=f61bf77"></script>
+<script src="js/subscriptions.js?v=f61bf77"></script>
+<script src="js/auth.js?v=f61bf77"></script>
+<script src="js/db.js?v=f61bf77"></script>
+<script src="js/spending.js?v=f61bf77"></script>
+<script src="js/trips.js?v=f61bf77"></script>
+<script src="js/home.js?v=f61bf77"></script>
+<script src="js/gmail.js?v=f61bf77"></script>
+<script src="js/csv.js?v=f61bf77"></script>
+<script src="js/main.js?v=f61bf77"></script>
 
 </body>
 </html>

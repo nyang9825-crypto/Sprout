@@ -176,15 +176,21 @@ function renderTripDetail() {
                 </button>
             </div>
             ${(trip.members||[]).map(m => {
-                const isOwner = m.isOwner || m.uid === trip.ownerId;
+                const mIsOwner = m.isOwner || m.uid === trip.ownerId;
                 const initials = (m.name||'?')[0].toUpperCase();
+                const photo    = m.uid ? ((() => { try { return localStorage.getItem(`sprout_photo_${m.uid}`); } catch { return null; } })()) : null;
+                const isEmoji  = photo && !photo.startsWith('data:');
+                const avatarStyle = photo && !isEmoji
+                    ? `background-image:url('${photo}');background-size:cover;background-position:center`
+                    : `background:linear-gradient(135deg,#22c55e,#15803d)`;
+                const avatarContent = isEmoji ? photo : (photo ? '' : `<span style="color:white;font-size:13px;font-weight:700">${initials}</span>`);
                 return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #f0fdf4">
-                    <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#15803d);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;flex-shrink:0">${initials}</div>
+                    <div style="width:36px;height:36px;border-radius:50%;${avatarStyle};display:flex;align-items:center;justify-content:center;font-size:${isEmoji?'18':'13'}px;flex-shrink:0;overflow:hidden">${avatarContent}</div>
                     <div style="flex:1;min-width:0">
                         <div style="font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(m.name)}</div>
                     </div>
-                    <span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;white-space:nowrap;${isOwner?'background:#f0fdf4;color:#15803d':'background:#f8fafc;color:#6b7280'}">
-                        ${isOwner?'👑 Owner':'✅ Joined'}
+                    <span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;white-space:nowrap;${mIsOwner?'background:#f0fdf4;color:#15803d':'background:#f8fafc;color:#6b7280'}">
+                        ${mIsOwner?'👑 Owner':'✅ Joined'}
                     </span>
                 </div>`;
             }).join('')}
@@ -783,58 +789,88 @@ async function joinTripByCode(shareCode) {
     toast(`${alreadyIn ? 'Already in' : 'Joined'} ${tripData.emoji} ${tripData.name}!`);
 }
 
-// ── Trip Events ───────────────────────────────────────────────────────
+// ── Trip Events / Activity Calendar ──────────────────────────────────
 function renderTripEvents(el) {
     const trip = getActiveTrip();
     if (!trip) return;
-    const events = [...(trip.events || [])].sort((a, b) => {
-        const da = a.date + (a.time || '');
-        const db = b.date + (b.time || '');
-        return da.localeCompare(db);
-    });
 
-    if (!events.length) {
-        el.innerHTML = `<div style="text-align:center;padding:40px 20px">
-            <div style="font-size:44px;margin-bottom:12px">🗓️</div>
-            <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">No events yet</div>
-            <div style="font-size:13px;color:var(--muted)">Tap + to add a horseback ride, cruise, dinner…</div>
+    const todayStr = new Date().toISOString().split('T')[0];
+    const sorted   = [...(trip.events || [])].sort((a, b) =>
+        (a.date + (a.time||'')).localeCompare(b.date + (b.time||''))
+    );
+
+    if (!sorted.length) {
+        el.innerHTML = `
+        <div style="text-align:center;padding:48px 20px 80px">
+            <div style="font-size:52px;margin-bottom:14px">🗓️</div>
+            <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px">No activities planned yet</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6;max-width:220px;margin:0 auto">
+                Tap + to add things like Horseback Riding, Sunset Cruise, Group Dinner…
+            </div>
         </div>`;
         return;
     }
 
-    el.innerHTML = `<div style="margin-bottom:80px">
-        ${events.map((ev, i) => {
-            const d     = fmtTripDate(ev.date);
-            const tStr  = ev.time ? ` · ${_fmt12h(ev.time)}` : '';
-            const isLast = i === events.length - 1;
-            return `
-            <div style="display:flex;gap:14px;margin-bottom:${isLast?'0':'4px'}">
-                <!-- Timeline spine -->
-                <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:36px">
-                    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #bbf7d0;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;z-index:1">${ev.emoji || '🎉'}</div>
-                    ${!isLast ? `<div style="width:2px;flex:1;min-height:16px;background:linear-gradient(to bottom,#bbf7d0,transparent);margin-top:2px"></div>` : ''}
-                </div>
-                <!-- Card -->
-                <div style="flex:1;background:white;border:1px solid var(--border-soft);border-radius:14px;padding:12px 14px;margin-bottom:10px">
+    const upcoming = sorted.filter(e => e.date >= todayStr);
+    const past     = sorted.filter(e => e.date < todayStr);
+
+    function evCard(ev) {
+        const isPast = ev.date < todayStr;
+        const tStr   = ev.time ? _fmt12h(ev.time) : null;
+
+        // Format the date as "Sat, Aug 16"
+        let dateLabel = '';
+        try {
+            const d = new Date(ev.date + 'T00:00:00');
+            dateLabel = d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+        } catch { dateLabel = ev.date; }
+
+        return `
+        <div style="display:flex;align-items:stretch;gap:0;margin-bottom:10px;${isPast?'opacity:0.6':''}">
+            <!-- Date pill on left -->
+            <div style="width:54px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:12px;gap:4px">
+                <div style="font-size:22px">${ev.emoji || '🎉'}</div>
+                ${tStr ? `<div style="font-size:10px;font-weight:700;color:var(--primary);text-align:center;white-space:nowrap">${tStr}</div>` : ''}
+            </div>
+            <!-- Card -->
+            <div style="flex:1;background:white;border:1.5px solid ${isPast?'#e5e7eb':'var(--border)'};border-radius:14px;padding:13px 14px;position:relative;overflow:hidden">
+                ${!isPast ? `<div style="position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--primary),var(--teal));border-radius:0"></div>` : ''}
+                <div style="padding-left:${!isPast?'8px':'0'}">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
                         <div style="flex:1;min-width:0">
-                            <div style="font-size:14px;font-weight:800;color:var(--text)">${escHtml(ev.name)}</div>
-                            <div style="font-size:12px;color:var(--muted);margin-top:3px">${d}${tStr}</div>
-                            ${ev.notes ? `<div style="font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.5;background:#f8fafc;border-radius:8px;padding:7px 10px">${escHtml(ev.notes)}</div>` : ''}
+                            <div style="font-size:14px;font-weight:800;color:${isPast?'#6b7280':'var(--text)'}">${escHtml(ev.name)}</div>
+                            <div style="font-size:12px;color:var(--muted);margin-top:2px">${dateLabel}</div>
+                            ${ev.notes ? `<div style="font-size:12px;color:#374151;margin-top:7px;line-height:1.55;background:#f8fafc;border-radius:8px;padding:7px 10px;border:1px solid #f0fdf4">${escHtml(ev.notes)}</div>` : ''}
                         </div>
-                        <div style="display:flex;gap:2px;flex-shrink:0">
-                            <button onclick="openEventModal(${ev.id})" style="padding:5px;border:none;background:none;cursor:pointer;color:#9ca3af" title="Edit">
+                        <div style="display:flex;gap:2px;flex-shrink:0;margin-top:-2px">
+                            <button onclick="openEventModal(${ev.id})" style="width:30px;height:30px;border:none;background:#f3f4f6;border-radius:8px;cursor:pointer;color:#6b7280;display:flex;align-items:center;justify-content:center" title="Edit">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </button>
-                            <button onclick="deleteEvent(${ev.id})" style="padding:5px;border:none;background:none;cursor:pointer;color:#d1d5db" title="Delete">
+                            <button onclick="deleteEvent(${ev.id})" style="width:30px;height:30px;border:none;background:#f3f4f6;border-radius:8px;cursor:pointer;color:#9ca3af;display:flex;align-items:center;justify-content:center" title="Delete">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             </button>
                         </div>
                     </div>
                 </div>
-            </div>`;
-        }).join('')}
-    </div>`;
+            </div>
+        </div>`;
+    }
+
+    let html = '<div style="margin-bottom:80px">';
+
+    if (upcoming.length) {
+        html += `<div style="font-size:11px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">📅 Upcoming · ${upcoming.length}</div>`;
+        html += upcoming.map(evCard).join('');
+    }
+
+    if (past.length) {
+        if (upcoming.length) html += `<div style="height:1px;background:#f0fdf4;margin:16px 0 14px"></div>`;
+        html += `<div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">✓ Past · ${past.length}</div>`;
+        html += past.map(evCard).join('');
+    }
+
+    html += '</div>';
+    el.innerHTML = html;
 }
 
 function _fmt12h(time24) {
