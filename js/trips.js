@@ -630,18 +630,14 @@ async function _pushTripToFirestore(trip) {
 }
 
 async function _initSharedTripDoc(trip) {
-    // Full set — used only when first publishing via invite/share
-    if (typeof dbSetSharedTrip !== 'function' || !trip?.shareCode) return;
-    try {
-        await dbSetSharedTrip(trip.shareCode, {
-            name: trip.name, emoji: trip.emoji,
-            startDate: trip.startDate, endDate: trip.endDate,
-            ownerId: trip.ownerId,
-            members: trip.members || [],
-            expenses: (trip.expenses || []).map(({ receiptThumb, ...e }) => e),
-            updatedAt: new Date().toISOString(),
-        });
-    } catch(e) { console.error(e); }
+    if (typeof dbSetSharedTrip !== 'function' || !trip?.shareCode) throw new Error('Firebase not available');
+    await dbSetSharedTrip(trip.shareCode, {
+        name: trip.name, emoji: trip.emoji,
+        startDate: trip.startDate, endDate: trip.endDate,
+        ownerId: trip.ownerId,
+        members: trip.members || [],
+        expenses: (trip.expenses || []).map(({ receiptThumb, ...e }) => e),
+    });
 }
 
 async function refreshSharedTrip(shareCode) {
@@ -665,7 +661,16 @@ async function refreshSharedTrip(shareCode) {
 async function copyInviteLink(tripId) {
     const trip = trips.find(t => t.id === tripId);
     if (!trip) return;
-    await _initSharedTripDoc(trip);
+
+    toast('Syncing trip…');
+    try {
+        await _initSharedTripDoc(trip);
+    } catch(e) {
+        console.error('[trips] invite sync failed:', e);
+        toast('Could not sync trip to cloud. Check your internet connection and try again.', 'error');
+        return;
+    }
+
     const base = window.location.href.replace(/[?#].*$/, '').replace(/app\.html$/, '');
     const url  = `${base}app.html?joinTrip=${trip.shareCode}`;
     if (navigator.share) {
@@ -683,7 +688,7 @@ async function copyInviteLink(tripId) {
 async function shareTripLink(tripId) {
     const trip = trips.find(t => t.id === tripId);
     if (!trip) return;
-    await _initSharedTripDoc(trip);
+    try { await _initSharedTripDoc(trip); } catch(e) { console.error('[trips] share sync failed:', e); }
     const base = window.location.href.replace(/[?#].*$/, '').replace(/app\.html$/, '');
     const url  = `${base}trip.html?code=${trip.shareCode}`;
     if (navigator.share) {
@@ -705,9 +710,17 @@ async function joinTripByCode(shareCode) {
     toast('Joining trip…');
     let tripData = null;
     if (typeof dbGetSharedTrip === 'function') {
-        tripData = await dbGetSharedTrip(shareCode);
+        try { tripData = await dbGetSharedTrip(shareCode); }
+        catch(e) {
+            console.error('[trips] join fetch error:', e);
+            toast('Could not reach Sprout servers. Check your connection and ask the owner to re-send the invite link.', 'error');
+            return;
+        }
     }
-    if (!tripData) { toast('Trip not found or expired', 'error'); return; }
+    if (!tripData) {
+        toast('Trip not found — ask the trip owner to tap Invite again to refresh the link.', 'error');
+        return;
+    }
 
     const uid = (typeof currentUid !== 'undefined' && currentUid) ? currentUid : user.uid;
     const alreadyIn = (tripData.members || []).find(m => m.uid === uid);

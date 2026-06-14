@@ -62,12 +62,10 @@ function dbSyncTrips(items) {
 }
 
 async function dbSetSharedTrip(shareCode, tripData) {
-    if (!_db) return;
-    try {
-        await _db.collection('shared_trips').doc(shareCode).set({
-            ...tripData, updatedAt: new Date().toISOString(),
-        });
-    } catch (e) { console.error('[db] share trip error:', e); }
+    if (!_db) throw new Error('Firebase not ready');
+    await _db.collection('shared_trips').doc(shareCode).set({
+        ...tripData, updatedAt: new Date().toISOString(),
+    });
 }
 
 async function dbUpdateSharedExpenses(shareCode, expenses) {
