@@ -135,14 +135,14 @@ body {
 .sidebar-logo .s-icon {
     width: 38px;
     height: 38px;
-    background: linear-gradient(135deg, var(--primary), var(--teal));
-    border-radius: 10px;
+    background: linear-gradient(145deg, #22c55e, #15803d);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 19px;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(22,163,74,0.4);
+    box-shadow: 0 4px 14px rgba(22,163,74,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .sidebar-logo span {
@@ -1189,4 +1189,265 @@ body {
     box-shadow: 0 0 0 2px rgba(22,163,74,0.15);
 }
 
+
 .spend-cat-btn.active span { color: var(--primary-dark); }
+
+/* ══════════════════════════════════════════
+   PHONE-APP FOCUS — MOBILE UX POLISH
+══════════════════════════════════════════ */
+
+/* ── Remove blue tap flash, use momentum scroll ── */
+* { -webkit-tap-highlight-color: transparent; }
+
+.section-card, .modal, .catalog-grid, .cat-breakdown {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ── Touch targets: manipulation hint stops 300ms delay ── */
+button, a, [onclick], label, select, input[type="checkbox"] {
+    touch-action: manipulation;
+}
+
+/* ── Press scale feedback on interactive surfaces ── */
+.stat-card:active             { transform: scale(0.975); transition: transform 0.1s; }
+.sub-item:active              { background: var(--primary-xlight); }
+.sub-grid-card:active         { transform: scale(0.96); }
+.catalog-tile:active          { transform: scale(0.94); }
+.spend-cat-btn:active         { transform: scale(0.94); }
+.cat-chip:active              { transform: scale(0.95); }
+.mobile-nav-item:active       { transform: scale(0.88); }
+.btn-add:active,
+.btn-save:active              { transform: scale(0.97); }
+
+/* ── Spending tabs ── */
+.spend-tabs {
+    display: flex;
+    gap: 4px;
+    background: white;
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+    width: fit-content;
+}
+
+.spend-tab {
+    padding: 8px 22px;
+    border: none;
+    background: transparent;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+    font-family: inherit;
+}
+
+.spend-tab.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+}
+
+.spend-tab:not(.active):hover {
+    background: var(--primary-xlight);
+    color: var(--primary-dark);
+}
+
+/* ── Subscription grid view ── */
+.sub-grid-view {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 20px;
+}
+
+.sub-grid-card {
+    background: white;
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 18px 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.sub-grid-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.sub-grid-paid {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(22,163,74,0.4);
+}
+
+/* ── Grid view toggle button ── */
+.btn-view-toggle {
+    padding: 9px 14px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--primary-dark);
+    transition: background 0.15s, border-color 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.btn-view-toggle:hover { background: var(--primary-xlight); border-color: var(--primary); }
+
+@media (max-width: 900px) {
+    .sub-grid-view { grid-template-columns: repeat(2, 1fr); padding: 14px; gap: 10px; }
+}
+
+/* ── Bottom sheet modals on phones ── */
+@media (max-width: 640px) {
+    .modal-backdrop {
+        align-items: flex-end !important;
+        padding: 0 !important;
+    }
+
+    .modal {
+        border-radius: 24px 24px 0 0 !important;
+        max-height: 93dvh;
+        overflow-y: auto;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-top: 36px !important;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom, 12px)) !important;
+        animation: sheetUp 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+        position: relative;
+    }
+
+    /* Drag handle */
+    .modal::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 4px;
+        background: #d1d5db;
+        border-radius: 99px;
+        pointer-events: none;
+    }
+
+    @keyframes sheetUp {
+        from { transform: translateY(40px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+}
+
+/* ── Enhanced mobile nav ── */
+@media (max-width: 900px) {
+    .mobile-nav {
+        height: 66px;
+        padding: 4px 0 0;
+        padding-bottom: env(safe-area-inset-bottom, 4px);
+        gap: 0;
+    }
+
+    .mobile-nav-item {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 8px 4px 6px;
+        position: relative;
+        transition: color 0.15s;
+        gap: 3px;
+    }
+
+    /* Active bar at top of nav item */
+    .mobile-nav-item.active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 32px;
+        height: 3px;
+        background: var(--primary);
+        border-radius: 0 0 4px 4px;
+    }
+
+    /* Compact page headers on mobile */
+    .page-header p {
+        display: none;
+    }
+
+    .page-header {
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .page-header h2 {
+        font-size: 22px;
+    }
+
+    /* Section card tighter radius on small */
+    .section-card { border-radius: 16px; }
+
+    .section-head {
+        padding: 14px 18px;
+    }
+
+    /* Tighter sub items */
+    .sub-item {
+        padding: 14px 18px;
+        gap: 12px;
+    }
+
+    .sub-emoji {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ── Small phone overrides ── */
+@media (max-width: 480px) {
+    .sub-grid-view { grid-template-columns: 1fr 1fr; }
+
+    .spend-tabs { width: 100%; }
+    .spend-tab  { flex: 1; text-align: center; padding: 8px 8px; }
+
+    .main {
+        padding: 14px 14px;
+        padding-bottom: calc(66px + 14px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .stats-grid {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 18px 16px 14px;
+    }
+
+    .stat-value { font-size: 26px; }
+
+    .topbar-right {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .btn-view-toggle { display: none; }
+}

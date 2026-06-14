@@ -1,3 +1,12 @@
+let subViewMode = 'list';
+
+function toggleSubView() {
+    subViewMode = subViewMode === 'list' ? 'grid' : 'list';
+    const btn = document.getElementById('subViewBtn');
+    if (btn) btn.textContent = subViewMode === 'grid' ? '☰  List' : '⊞  Grid';
+    renderSubscriptions();
+}
+
 function renderAll() {
     renderDashboard();
     renderSubscriptions();
@@ -66,9 +75,37 @@ function renderSubscriptions() {
         list.innerHTML = subs.length === 0
             ? emptyState('empty_list',   'No subscriptions yet', 'Click "+ Add New" to track your first subscription.')
             : emptyState('empty_search', 'No matches',           'Try a different search or filter.');
+    } else if (subViewMode === 'grid') {
+        list.innerHTML = renderSubGrid(filtered);
     } else {
         list.innerHTML = filtered.map(s => renderSubItem(s, true)).join('');
     }
+}
+
+function renderSubGrid(filtered) {
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const cards = filtered.map(s => {
+        const days   = daysUntil(s.renewalDate);
+        const isPaid = days < 0;
+        const logo   = BRAND_LOGOS[s.name];
+        const d      = new Date(s.renewalDate + 'T00:00:00');
+        const day    = d.getDate();
+        const suf    = [,'st','nd','rd'][day % 10 > 3 || (day >= 11 && day <= 13) ? 0 : day % 10] || 'th';
+        const color  = CAT_COLORS[s.category] || '#16a34a';
+        const iconHtml = logo
+            ? `<img src="${logo}" style="width:44px;height:44px;border-radius:12px;object-fit:contain;padding:6px;background:white;border:1px solid var(--border-soft)" onerror="this.style.display='none'" />`
+            : `<div style="width:44px;height:44px;border-radius:12px;background:${color}18;border:1px solid ${color}30;display:flex;align-items:center;justify-content:center;font-size:22px">${s.emoji}</div>`;
+
+        return `<div class="sub-grid-card" onclick="openModal(${s.id})">
+            ${isPaid ? `<div class="sub-grid-paid"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div>` : ''}
+            ${iconHtml}
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${escHtml(s.name)}</div>
+            <div style="font-size:16px;font-weight:800;color:var(--text);margin-top:3px;letter-spacing:-0.4px">$${toMonthly(s.cost, s.cycle).toFixed(2)}<span style="font-size:10px;font-weight:600;color:var(--muted)">/mo</span></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">${isPaid ? 'Renewed' : 'Renews'} ${day}${suf}</div>
+            <div style="font-size:10px;font-weight:700;color:${color};margin-top:5px;text-transform:uppercase;letter-spacing:0.3px">${s.category}</div>
+        </div>`;
+    });
+    return `<div class="sub-grid-view">${cards.join('')}</div>`;
 }
 
 function renderAnalytics() {

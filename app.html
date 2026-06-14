@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sprout — Where Your Money Grows</title>
-    <link rel="icon" type="image/png" href="sprout-logo.png">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="sprout-logo.png">
+    <meta name="theme-color" content="#052e16">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -182,6 +186,7 @@
                     <input type="text" placeholder="Search subscriptions..." id="searchInput" oninput="renderSubscriptions()" />
                 </div>
                 <div class="topbar-right">
+                    <button class="btn-view-toggle" id="subViewBtn" onclick="toggleSubView()">⊞  Grid</button>
                     <button class="btn-export" onclick="exportCSV()">Export</button>
                     <button class="btn-import-csv" onclick="triggerCSVImport()">Import Bank CSV</button>
                     <button class="btn-add" onclick="openModal()">+ Add New</button>
@@ -258,8 +263,20 @@
             </div>
 
             <div id="spendSummary"></div>
-            <div id="spendCatBreakdown"></div>
-            <div id="spendList"></div>
+
+            <!-- Tab switcher -->
+            <div class="spend-tabs">
+                <button id="spendTabTx" class="spend-tab active" onclick="showSpendTab('tx')">Transactions</button>
+                <button id="spendTabCat" class="spend-tab" onclick="showSpendTab('cat')">Categories</button>
+            </div>
+
+            <!-- Transactions view -->
+            <div id="spendTxView">
+                <div id="spendList"></div>
+            </div>
+
+            <!-- Categories view -->
+            <div id="spendCatView" class="hidden"></div>
         </div>
 
         <!-- Upcoming Renewals -->
